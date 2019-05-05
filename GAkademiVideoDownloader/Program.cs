@@ -74,6 +74,7 @@ namespace GAkademiVideoDownloader
                                                             //check for directory
                                                             var directory = CheckDirectory(playlistLinkArray[0], videoHeader, dirIndex);
                                                             var filename = $@"{directory}\{videoHeader}_{ind.PadLeft(3, '0')}.ts";
+                                                            var fileDownloadLink = $"{playlistLinkArray[0]}{chunkPath}";
 
                                                             //download file
                                                             bool isDownloadRetry = true;
@@ -83,39 +84,27 @@ namespace GAkademiVideoDownloader
                                                                 {
                                                                     using (var client = new WebClient())
                                                                     {
-                                                                        var fileDownloadLink = $"{playlistLinkArray[0]}{chunkPath}";
+                                                                        if (CompareFileSize(fileDownloadLink, filename))
+                                                                            break;
 
-                                                                        client.OpenRead(fileDownloadLink);
-                                                                        long fileWebSize = Convert.ToInt64(client.ResponseHeaders["Content-Length"]);
+                                                                        client.DownloadFile(fileDownloadLink, filename);
 
-                                                                        //client.DownloadFile(fileDownloadLink, filename);
-                                                                        if (File.Exists(filename))
+                                                                        if (CompareFileSize(fileDownloadLink, filename))
                                                                         {
-                                                                            FileInfo fileInfo = new FileInfo(filename);
-                                                                            long fileDiskSize = fileInfo.Length;
-
-                                                                            File.AppendAllLines(@"D:\_ga\chunkList.txt", new[] { $"Current File: {filename}" });
-                                                                            File.AppendAllLines(@"D:\_ga\chunkList.txt", new[] { $"Web Size: {fileWebSize}" });
-                                                                            File.AppendAllLines(@"D:\_ga\chunkList.txt", new[] { $"DiskSize: {fileDiskSize}" });
-                                                                            File.AppendAllLines(@"D:\_ga\chunkList.txt", new[] { "" });
-
+                                                                            Console.WriteLine(filename);
                                                                             isDownloadRetry = false;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            //isDownloadRetry = true;
                                                                         }
 
                                                                         //File.AppendAllLines(@"D:\_ga\chunkList.txt", new[] { $"{playlistLinkArray[0]}{chunkPath}" });
                                                                         //File.AppendAllLines(@"D:\_ga\downloadList.txt", new[] { $@"{directory}\{videoHeader}_{ind.PadLeft(3, '0')}" });
                                                                     }
                                                                 }
-                                                                catch (Exception e)
+                                                                catch (Exception)
                                                                 {
-                                                                    //isDownloadRetry = true;
-                                                                    Console.WriteLine($"Error: {filename}");
-                                                                    Console.WriteLine($"Exception occured: {e.Message}");
-                                                                    Console.WriteLine(e.StackTrace);
+                                                                    isDownloadRetry = true;
+                                                                    //Console.WriteLine($"Error: {filename}");
+                                                                    //Console.WriteLine($"Exception occured: {e.Message}");
+                                                                    //Console.WriteLine(e.StackTrace);
                                                                 }
                                                             }
 
@@ -142,6 +131,31 @@ namespace GAkademiVideoDownloader
 
         //################################################################################
         #region Private Implementation
+
+        private static bool CompareFileSize(string fileDownloadLink, string filename)
+        {
+            long fileDiskSize;
+            long fileWebSize;
+
+            if (File.Exists(filename))
+            {
+                FileInfo fileInfo = new FileInfo(filename);
+                fileDiskSize = fileInfo.Length;
+            }
+            else
+            {
+                return false;
+            }
+
+            using (var client = new WebClient())
+            {
+                var openStream = client.OpenRead(fileDownloadLink);
+                fileWebSize = Convert.ToInt64(client.ResponseHeaders["Content-Length"]);
+                openStream?.Close();
+            }
+
+            return fileWebSize == fileDiskSize;
+        }
 
         private static string CheckDirectory(string rootFolders, string mainFolder, int index)
         {
