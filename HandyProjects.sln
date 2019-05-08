@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GAkademiVideoDownloader", "GAkademiVideoDownloader\GAkademiVideoDownloader.csproj", "{41EC4FC7-8826-49C8-8BB5-E5CE99173914}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CurrencyRateTracker", "CurrencyRateTracker", "{AD1B5B42-F514-4365-AB44-E8987F58EA9D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleRateTracker", "CurrencyRateTracker\SimpleRateTracker\SimpleRateTracker.csproj", "{EB4BDEF6-6186-4879-A4A8-22B82273FEBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyTool", "HandyTool\HandyTool.csproj", "{2F4794CD-54E3-4CA9-A84D-266CC92F7974}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,11 +25,18 @@ Global
 		{EB4BDEF6-6186-4879-A4A8-22B82273FEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB4BDEF6-6186-4879-A4A8-22B82273FEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB4BDEF6-6186-4879-A4A8-22B82273FEBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F4794CD-54E3-4CA9-A84D-266CC92F7974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F4794CD-54E3-4CA9-A84D-266CC92F7974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F4794CD-54E3-4CA9-A84D-266CC92F7974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F4794CD-54E3-4CA9-A84D-266CC92F7974}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB4BDEF6-6186-4879-A4A8-22B82273FEBF} = {AD1B5B42-F514-4365-AB44-E8987F58EA9D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {63708BAD-FB8C-4FC1-A9E9-7EB49006CEC6}
 	EndGlobalSection
 EndGlobal
