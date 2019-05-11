@@ -1,16 +1,19 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using HandyTool.Properties;
-
-namespace HandyTool
+﻿namespace HandyTool
 {
     partial class MainForm
     {
+        //################################################################################
+        #region Fields
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+
+        #endregion
+
+        //################################################################################
+        #region Overrides
 
         /// <summary>
         /// Clean up any resources being used.
@@ -25,7 +28,10 @@ namespace HandyTool
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #endregion
+
+        //################################################################################
+        #region Private Implementation
 
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -33,23 +39,14 @@ namespace HandyTool
         /// </summary>
         private void InitializeComponent()
         {
-            this.customPanel1 = new HandyTool.Components.CustomPanel();
             this.SuspendLayout();
-            // 
-            // customPanel1
-            // 
-            this.customPanel1.Location = new System.Drawing.Point(12, 12);
-            this.customPanel1.Name = "customPanel1";
-            this.customPanel1.Size = new System.Drawing.Size(200, 49);
-            this.customPanel1.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(235, 318);
-            this.Controls.Add(this.customPanel1);
+            this.Size = new System.Drawing.Size(166, 318);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -57,13 +54,14 @@ namespace HandyTool
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Form1";
+            this.TopMost = true;
+            this.ShowInTaskbar = false;
             this.ResumeLayout(false);
-
         }
 
         #endregion
 
-        private Components.CustomPanel customPanel1;
+
     }
 }
 

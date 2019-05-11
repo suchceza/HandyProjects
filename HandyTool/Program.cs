@@ -1,5 +1,7 @@
 ﻿using HandyTool.Properties;
+
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HandyTool
@@ -22,22 +24,29 @@ namespace HandyTool
 
     public class CustomApplicationContext : ApplicationContext
     {
-        private NotifyIcon m_NotifyIcon;
+        private static NotifyIcon s_NotifyIcon;
 
         public CustomApplicationContext(Form mainForm)
         {
             MainForm = mainForm;
-            m_NotifyIcon = new NotifyIcon()
+            Bitmap icon = Resources.Logo;
+
+            s_NotifyIcon = new NotifyIcon()
             {
-                Icon = Resources.AppIcon,
-                ContextMenu = new ContextMenu(new MenuItem[] { new MenuItem("Exit", Exit)}),
+                Icon = Icon.FromHandle(icon.GetHicon()),
+                ContextMenu = new ContextMenu(new[] { new MenuItem("Exit", Exit) }),
                 Visible = true
             };
         }
 
         private void Exit(object sender, EventArgs args)
         {
-            m_NotifyIcon.Visible = false;
+            Exit();
+        }
+
+        public static void Exit()
+        {
+            s_NotifyIcon.Visible = false;
             Application.Exit();
         }
     }
