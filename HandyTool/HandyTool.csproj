@@ -80,6 +80,8 @@
     <Compile Include="Currency\CurrencyOptions.cs" />
     <Compile Include="Currency\CurrencySummary.cs" />
     <Compile Include="Currency\Yahoo.cs" />
+    <Compile Include="Hour\HourCounter.cs" />
+    <Compile Include="Hour\HourUpdatedEventArgs.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

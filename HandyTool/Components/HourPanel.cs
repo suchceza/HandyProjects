@@ -1,11 +1,14 @@
 ﻿using HandyTool.Components.Custom;
+using HandyTool.Hour;
 using HandyTool.Properties;
 using HandyTool.Style;
 using HandyTool.Style.Colors;
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace HandyTool.Components
@@ -19,6 +22,9 @@ namespace HandyTool.Components
 
         private Label m_HourDetails;
         private readonly TextBox m_HourText;
+
+        private HourCounter m_HourCounter;
+        private bool m_IsCancelled = true;
 
         #endregion
 
@@ -35,7 +41,7 @@ namespace HandyTool.Components
 
             Paint += PaintBorder;
 
-            //BackgroundWorker.RunWorkerAsync();
+            BackgroundWorker.RunWorkerAsync();
         }
 
         #endregion
@@ -50,12 +56,18 @@ namespace HandyTool.Components
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            throw new System.NotImplementedException();
+            var stopwatch = new Stopwatch();
+
+            while (!m_IsCancelled)
+            {
+                UpdateHour(null);
+                Thread.Sleep(1000);
+            }
         }
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            m_IsCancelled = true;
         }
 
         #endregion
@@ -68,7 +80,7 @@ namespace HandyTool.Components
             #region Hour Text
 
             //Text Stuff
-            m_HourText.Text = @"00:02:45";
+            m_HourText.Text = @"not set";
             m_HourText.Font = new Font(new FontFamily("Consolas"), 11, FontStyle.Bold);
             m_HourText.BorderStyle = BorderStyle.None;
             m_HourText.TextAlign = HorizontalAlignment.Center;
@@ -125,16 +137,49 @@ namespace HandyTool.Components
             Size = new Size(m_Parent.Width - 2, 22);
         }
 
-        private void PaintBorder(object sender, PaintEventArgs e)
+        private DateTime TryParseClock(string value)
         {
-            Rectangle border = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
-            CreateGraphics().DrawRectangle(new Pen(Color.White, 1), border);
+            try
+            {
+                var year = DateTime.Now.Year;
+                var month = DateTime.Now.Month;
+                var day = DateTime.Now.Day;
+                var hour = int.Parse(value.Substring(0, 2));
+                var minute = int.Parse(value.Substring(2, 2));
+                var second = int.Parse(value.Substring(4, 2));
+
+                return new DateTime(year, month, day, hour, minute, second);
+            }
+            catch (Exception)
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        private void UpdateHour(HourUpdatedEventArgs args)
+        {
+            if (m_HourText.InvokeRequired)
+            {
+                HourUpdateCallback callback = UpdateHour;
+                Invoke(callback, args);
+            }
+            else
+            {
+                var difference = DateTime.Now - m_HourCounter.ShiftEndTime + m_HourCounter.WorkingHour;
+                m_HourText.Text = $@"{Math.Abs(difference.Hours):00}:{Math.Abs(difference.Minutes):00}:{Math.Abs(difference.Seconds):00}";
+            }
         }
 
         #endregion
 
         //################################################################################
         #region Event Implementation
+
+        private void PaintBorder(object sender, PaintEventArgs e)
+        {
+            Rectangle border = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
+            CreateGraphics().DrawRectangle(new Pen(Color.White, 1), border);
+        }
 
         private void HourDetails_Click(object sender, EventArgs e)
         {
@@ -144,14 +189,21 @@ namespace HandyTool.Components
         private void HourText_DoubleClick(object sender, EventArgs e)
         {
             m_HourText.ReadOnly = false;
+            m_HourText.SelectAll();
+            m_IsCancelled = true;
         }
 
         private void HourText_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)13)
+            if (e.KeyChar == (char)13) //enter key pressed
             {
-                m_HourText.Text = DateTime.Now.ToLongTimeString();
+                var parsedTime = TryParseClock(m_HourText.Text);
+                m_HourCounter = new HourCounter(parsedTime);
+
+                m_HourText.Text = $@"{parsedTime.Hour:00}:{parsedTime.Minute:00}:{parsedTime.Second:00}";
                 m_HourText.ReadOnly = true;
+                m_IsCancelled = false;
+                BackgroundWorker.RunWorkerAsync();
             }
         }
 
