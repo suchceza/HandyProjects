@@ -50,10 +50,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\DraggablePanel.cs">
+    <Compile Include="Components\Custom\DraggablePanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Popup.cs">
+    <Compile Include="Components\Custom\ImageLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\Custom\Popup.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\CurrencyPanel.cs">
@@ -83,8 +86,11 @@
     <Compile Include="Style\ColorBase.cs" />
     <Compile Include="Style\ColorPalette.cs" />
     <Compile Include="Style\ColorSet.cs" />
+    <Compile Include="Style\Colors\Black.cs" />
     <Compile Include="Style\Colors\Blue.cs" />
+    <Compile Include="Style\Colors\Green.cs" />
     <Compile Include="Style\Colors\Red.cs" />
+    <Compile Include="Style\Painter.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

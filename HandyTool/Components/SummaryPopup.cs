@@ -1,4 +1,5 @@
-﻿using HandyTool.Currency;
+﻿using HandyTool.Components.Custom;
+using HandyTool.Currency;
 using HandyTool.Style;
 
 using System.Drawing;
@@ -64,8 +65,6 @@ namespace HandyTool.Components
             Size = new Size(193, 105);
             MouseDown += DragAndDrop;
 
-            var palette = new ColorPalette<T>();
-
             #region Previous Close
 
             m_PreviousCloseLabel.Text = @"Previous Close:";
@@ -73,16 +72,14 @@ namespace HandyTool.Components
             m_PreviousCloseLabel.Size = new Size(120, 16);
             m_PreviousCloseLabel.Location = new Point(1, 1);
             m_PreviousCloseLabel.TextAlign = ContentAlignment.MiddleRight;
-            m_PreviousCloseLabel.BackColor = palette.Light.BackColor;
-            m_PreviousCloseLabel.ForeColor = palette.Light.ForeColor;
+            Painter<T>.Light(m_PreviousCloseLabel);
             m_PreviousCloseLabel.MouseDown += DragAndDrop;
 
             m_PreviousCloseValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
             m_PreviousCloseValue.Size = new Size(70, 16);
             m_PreviousCloseValue.Location = new Point(122, 1);
             m_PreviousCloseValue.TextAlign = ContentAlignment.MiddleRight;
-            m_PreviousCloseValue.BackColor = palette.Light.BackColor;
-            m_PreviousCloseValue.ForeColor = palette.Light.ForeColor;
+            Painter<T>.Light(m_PreviousCloseValue);
             m_PreviousCloseValue.MouseDown += DragAndDrop;
 
             Controls.Add(m_PreviousCloseLabel);
@@ -97,18 +94,14 @@ namespace HandyTool.Components
             m_OpenLabel.Size = new Size(120, 16);
             m_OpenLabel.Location = new Point(1, 18);
             m_OpenLabel.TextAlign = ContentAlignment.MiddleRight;
-            m_OpenLabel.BackColor = palette.Light.BackColor;
-            m_OpenLabel.ForeColor = palette.Light.ForeColor;
-            m_OpenLabel.BorderStyle = BorderStyle.None;
+            Painter<T>.Light(m_OpenLabel);
             m_OpenLabel.MouseDown += DragAndDrop;
 
             m_OpenValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
             m_OpenValue.Size = new Size(70, 16);
             m_OpenValue.Location = new Point(122, 18);
             m_OpenValue.TextAlign = ContentAlignment.MiddleRight;
-            m_OpenValue.BackColor = palette.Light.BackColor;
-            m_OpenValue.ForeColor = palette.Light.ForeColor;
-            m_OpenValue.BorderStyle = BorderStyle.None;
+            Painter<T>.Light(m_OpenValue);
             m_OpenValue.MouseDown += DragAndDrop;
 
             Controls.Add(m_OpenLabel);
@@ -123,16 +116,14 @@ namespace HandyTool.Components
             m_DailyLowLabel.Size = new Size(120, 16);
             m_DailyLowLabel.Location = new Point(1, 35);
             m_DailyLowLabel.TextAlign = ContentAlignment.MiddleRight;
-            m_DailyLowLabel.BackColor = palette.Normal.BackColor;
-            m_DailyLowLabel.ForeColor = palette.Normal.ForeColor;
+            Painter<T>.Normal(m_DailyLowLabel);
             m_DailyLowLabel.MouseDown += DragAndDrop;
 
             m_DailyLowValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
             m_DailyLowValue.Size = new Size(70, 16);
             m_DailyLowValue.Location = new Point(122, 35);
             m_DailyLowValue.TextAlign = ContentAlignment.MiddleRight;
-            m_DailyLowValue.BackColor = palette.Normal.BackColor;
-            m_DailyLowValue.ForeColor = palette.Normal.ForeColor;
+            Painter<T>.Normal(m_DailyLowValue);
             m_DailyLowValue.MouseDown += DragAndDrop;
 
             Controls.Add(m_DailyLowLabel);
@@ -147,16 +138,14 @@ namespace HandyTool.Components
             m_DailyHighLabel.Size = new Size(120, 16);
             m_DailyHighLabel.Location = new Point(1, 52);
             m_DailyHighLabel.TextAlign = ContentAlignment.MiddleRight;
-            m_DailyHighLabel.BackColor = palette.Normal.BackColor;
-            m_DailyHighLabel.ForeColor = palette.Normal.ForeColor;
+            Painter<T>.Normal(m_DailyHighLabel);
             m_DailyHighLabel.MouseDown += DragAndDrop;
 
             m_DailyHighValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
             m_DailyHighValue.Size = new Size(70, 16);
             m_DailyHighValue.Location = new Point(122, 52);
             m_DailyHighValue.TextAlign = ContentAlignment.MiddleRight;
-            m_DailyHighValue.BackColor = palette.Normal.BackColor;
-            m_DailyHighValue.ForeColor = palette.Normal.ForeColor;
+            Painter<T>.Normal(m_DailyHighValue);
             m_DailyHighValue.MouseDown += DragAndDrop;
 
             Controls.Add(m_DailyHighLabel);
@@ -171,18 +160,14 @@ namespace HandyTool.Components
             m_YearlyLowLabel.Size = new Size(120, 16);
             m_YearlyLowLabel.Location = new Point(1, 69);
             m_YearlyLowLabel.TextAlign = ContentAlignment.MiddleRight;
-            m_YearlyLowLabel.BackColor = palette.Dark.BackColor;
-            m_YearlyLowLabel.ForeColor = palette.Dark.ForeColor;
-            m_YearlyLowLabel.BorderStyle = BorderStyle.None;
+            Painter<T>.Dark(m_YearlyLowLabel);
             m_YearlyLowLabel.MouseDown += DragAndDrop;
 
             m_YearlyLowValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
             m_YearlyLowValue.Size = new Size(70, 16);
             m_YearlyLowValue.Location = new Point(122, 69);
             m_YearlyLowValue.TextAlign = ContentAlignment.MiddleRight;
-            m_YearlyLowValue.BackColor = palette.Dark.BackColor;
-            m_YearlyLowValue.ForeColor = palette.Dark.ForeColor;
-            m_YearlyLowValue.BorderStyle = BorderStyle.None;
+            Painter<T>.Dark(m_YearlyLowValue);
             m_YearlyLowValue.MouseDown += DragAndDrop;
 
             Controls.Add(m_YearlyLowLabel);
@@ -197,18 +182,14 @@ namespace HandyTool.Components
             m_YearlyHighLabel.Size = new Size(120, 16);
             m_YearlyHighLabel.Location = new Point(1, 86);
             m_YearlyHighLabel.TextAlign = ContentAlignment.MiddleRight;
-            m_YearlyHighLabel.BackColor = palette.Dark.BackColor;
-            m_YearlyHighLabel.ForeColor = palette.Dark.ForeColor;
-            m_YearlyHighLabel.BorderStyle = BorderStyle.None;
+            Painter<T>.Dark(m_YearlyHighLabel);
             m_YearlyHighLabel.MouseDown += DragAndDrop;
 
             m_YearlyHighValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
             m_YearlyHighValue.Size = new Size(70, 16);
             m_YearlyHighValue.Location = new Point(122, 86);
             m_YearlyHighValue.TextAlign = ContentAlignment.MiddleRight;
-            m_YearlyHighValue.BackColor = palette.Dark.BackColor;
-            m_YearlyHighValue.ForeColor = palette.Dark.ForeColor;
-            m_YearlyHighValue.BorderStyle = BorderStyle.None;
+            Painter<T>.Dark(m_YearlyHighValue);
             m_YearlyHighValue.MouseDown += DragAndDrop;
 
             Controls.Add(m_YearlyHighLabel);

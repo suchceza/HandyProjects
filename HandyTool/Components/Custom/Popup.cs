@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace HandyTool.Components
+namespace HandyTool.Components.Custom
 {
     internal sealed class Popup : ToolStripDropDown
     {

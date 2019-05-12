@@ -1,4 +1,7 @@
-﻿using HandyTool.Properties;
+﻿using HandyTool.Components.Custom;
+using HandyTool.Properties;
+using HandyTool.Style;
+using HandyTool.Style.Colors;
 
 using System;
 using System.Drawing;
@@ -13,9 +16,9 @@ namespace HandyTool.Components
 
         private const int c_Padding = 1;
 
-        private readonly Label m_ImageLabel = new Label();
+        private Label m_ImageLabel;
+        private Label m_CloseLabel;
         private readonly Label m_TitleLabel = new Label();
-        private readonly Label m_CloseLabel = new Label();
 
         #endregion
 
@@ -24,23 +27,7 @@ namespace HandyTool.Components
 
         public TitlePanel(Control parent)
         {
-            Name = "TitlePanel";
-            Location = new Point(1, 1);
-            Size = new Size(parent.Width - 2, 16);
-            TabIndex = 0;
-            TabStop = false;
-
-            InitializeComponents();
-        }
-
-        #endregion
-
-        //################################################################################
-        #region Event Implementations
-
-        private void CloseLabel_Click(object sender, EventArgs e)
-        {
-            CustomApplicationContext.Exit();
+            InitializeComponents(parent);
         }
 
         #endregion
@@ -48,22 +35,23 @@ namespace HandyTool.Components
         //################################################################################
         #region Private Implementation
 
-        private void InitializeComponents()
+        private void InitializeComponents(Control parent)
         {
+            Name = "TitlePanel";
+            Location = new Point(1, 1);
+            Size = new Size(parent.Width - 2, 16);
+            BackColor = Color.White;
+            TabIndex = 0;
+            TabStop = false;
+
             #region Image Label
 
-            //Position/Size Stuff
-            m_ImageLabel.Location = new Point(0, 0);
-            m_ImageLabel.Size = new Size(18, 16);
-
-            //Alignment Stuff
-            m_ImageLabel.Padding = new Padding(c_Padding);
-            m_ImageLabel.TextAlign = ContentAlignment.MiddleCenter;
-
-            //Style Stuff
-            m_ImageLabel.BackgroundImage = Resources.Logo;
-            m_ImageLabel.BackgroundImageLayout = ImageLayout.Center;
-            m_ImageLabel.BackColor = Color.FromArgb(255, 255, 255);
+            m_ImageLabel = new ImageLabel(this, 0)
+            {
+                BackgroundImage = Resources.Logo,
+                Size = new Size(18, 16),
+                Cursor = Cursors.Default
+            };
 
             //Event Stuff
             m_ImageLabel.MouseDown += DragAndDrop;
@@ -83,15 +71,15 @@ namespace HandyTool.Components
 
             //Position/Size Stuff
             m_TitleLabel.Location = new Point(m_ImageLabel.Width, 0);
-            m_TitleLabel.Size = new Size(Width - 35, 16);
+            m_TitleLabel.Size = new Size(Width - 36, 16);
 
             //Alignment Stuff
             m_TitleLabel.Padding = new Padding(c_Padding);
             m_TitleLabel.TextAlign = ContentAlignment.MiddleLeft;
 
+
             //Style Stuff
-            m_TitleLabel.ForeColor = Color.FromArgb(61, 61, 61);
-            m_TitleLabel.BackColor = Color.FromArgb(255, 255, 255);
+            Painter<Black>.Light(m_TitleLabel);
 
             //Event Stuff
             m_TitleLabel.MouseDown += DragAndDrop;
@@ -102,18 +90,11 @@ namespace HandyTool.Components
 
             #region Close Label
 
-            //Position/Size Stuff
-            m_CloseLabel.Location = new Point(m_ImageLabel.Width + 1 + m_TitleLabel.Width, 0);
-            m_CloseLabel.Size = new Size(16, 16);
-
-            //Alignment Stuff
-            m_CloseLabel.Padding = new Padding(c_Padding);
-            m_CloseLabel.TextAlign = ContentAlignment.MiddleCenter;
-
-            //Style Stuff
-            m_CloseLabel.BackgroundImage = Resources.Close;
-            m_CloseLabel.BackColor = Color.FromArgb(255, 255, 255);
-            m_CloseLabel.Cursor = Cursors.Hand;
+            m_CloseLabel = new ImageLabel(this, 0)
+            {
+                BackgroundImage = Resources.Close,
+                Size = new Size(16, 16)
+            };
 
             //Event Stuff
             m_CloseLabel.Click += CloseLabel_Click;
@@ -121,6 +102,16 @@ namespace HandyTool.Components
             Controls.Add(m_CloseLabel);
 
             #endregion
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Event Implementations
+
+        private void CloseLabel_Click(object sender, EventArgs e)
+        {
+            CustomApplicationContext.Exit();
         }
 
         #endregion

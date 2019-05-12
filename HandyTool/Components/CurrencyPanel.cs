@@ -1,5 +1,7 @@
-﻿using HandyTool.Currency;
+﻿using HandyTool.Components.Custom;
+using HandyTool.Currency;
 using HandyTool.Properties;
+using HandyTool.Style;
 using HandyTool.Style.Colors;
 
 using System;
@@ -27,7 +29,7 @@ namespace HandyTool.Components
 
         private readonly Label m_CurrencyLabel;
         private readonly Label m_CurrencyValue;
-        private readonly Label m_CurrencySettings;
+        private Label m_CurrencySettings;
         private readonly Popup m_Popup;
         private readonly SummaryPopup<Blue> m_CurrencySummary;
 
@@ -52,7 +54,6 @@ namespace HandyTool.Components
 
             m_CurrencyLabel = new Label();
             m_CurrencyValue = new Label();
-            m_CurrencySettings = new Label();
 
             m_BackgroundWorker = new BackgroundWorker();
 
@@ -103,35 +104,6 @@ namespace HandyTool.Components
         #endregion
 
         //################################################################################
-        #region Event Implementation
-
-        private void CurrencySettings_Click(object sender, EventArgs e)
-        {
-            if (!m_Popup.Visible)
-            {
-                var top = Parent.Top;
-
-                foreach (Control control in Parent.Controls)
-                {
-                    if (control.Name == Name)
-                    {
-                        top += control.Top;
-                        top -= m_Popup.Height - control.Height;
-                    }
-                }
-
-                m_Popup.Show(new Point(Parent.Left - 50, top));
-                m_CurrencySummary.SetValues(m_PreviousValues);
-            }
-            else
-            {
-                m_Popup.Close();
-            }
-        }
-
-        #endregion
-
-        //################################################################################
         #region Private Implementation
 
         private void SetPanelPosition()
@@ -171,8 +143,7 @@ namespace HandyTool.Components
             m_CurrencyLabel.TextAlign = ContentAlignment.MiddleCenter;
 
             //Style Stuff
-            m_CurrencyLabel.BackColor = Color.FromArgb(140, 140, 140);
-            m_CurrencyLabel.ForeColor = Color.FromArgb(0, 0, 0);
+            Painter<Black>.Normal(m_CurrencyLabel);
 
             Controls.Add(m_CurrencyLabel);
 
@@ -204,25 +175,11 @@ namespace HandyTool.Components
 
             #region Currency Settings
 
-            //Basic Stuff
-            m_CurrencySettings.Name = "Settings";
-
-            //Text Stuff
-            m_CurrencySettings.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-
-            //Position/Size Stuff
-            m_CurrencySettings.Location = new Point(c_PaddingMargin + Controls[0].Width + c_SpaceBetween + Controls[1].Width + c_SpaceBetween, c_PaddingMargin);
-            m_CurrencySettings.Size = new Size(18, 18);
-
-            //Alignment Stuff
-            m_CurrencySettings.Padding = new Padding(c_PaddingMargin);
-            m_CurrencySettings.TextAlign = ContentAlignment.MiddleRight;
-
-            //Style Stuff
-            m_CurrencySettings.BackgroundImage = Resources.Summary;
-            m_CurrencySettings.BackgroundImageLayout = ImageLayout.Center;
-            m_CurrencySettings.BackColor = Color.FromArgb(255, 255, 255);
-            m_CurrencySettings.Cursor = Cursors.Hand;
+            m_CurrencySettings = new ImageLabel(this, 2)
+            {
+                BackgroundImage = Resources.Summary,
+                Size = new Size(18, 18)
+            };
 
             //Event Stuff
             m_CurrencySettings.Click += CurrencySettings_Click;
@@ -254,11 +211,11 @@ namespace HandyTool.Components
 
                 if (currencySummary.Actual > m_PreviousValues.Actual)
                 {
-                    m_CurrencyValue.BackColor = Color.FromArgb(121, 255, 111); //green
+                    Painter<Green>.Light(m_CurrencyValue);
                 }
                 else if (currencySummary.Actual < m_PreviousValues.Actual)
                 {
-                    m_CurrencyValue.BackColor = Color.FromArgb(255, 111, 111); //red
+                    Painter<Red>.Light(m_CurrencyValue);
                 }
 
                 m_CurrencyValue.Text = $@"{currencySummary.Actual:F4}";
@@ -270,6 +227,35 @@ namespace HandyTool.Components
         {
             Rectangle border = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
             CreateGraphics().DrawRectangle(new Pen(Color.White, 1), border);
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Event Implementation
+
+        private void CurrencySettings_Click(object sender, EventArgs e)
+        {
+            if (!m_Popup.Visible)
+            {
+                var top = Parent.Top;
+
+                foreach (Control control in Parent.Controls)
+                {
+                    if (control.Name == Name)
+                    {
+                        top += control.Top;
+                        top -= m_Popup.Height - control.Height;
+                    }
+                }
+
+                m_Popup.Show(new Point(Parent.Left - 50, top));
+                m_CurrencySummary.SetValues(m_PreviousValues);
+            }
+            else
+            {
+                m_Popup.Close();
+            }
         }
 
         #endregion
