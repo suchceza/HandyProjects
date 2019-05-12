@@ -58,144 +58,72 @@ namespace HandyTool.Components
         #endregion
 
         //################################################################################
+        #region Protected Implementation
+
+        protected override void DragAndDrop(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Parent.Handle, WmNclButtonDown, HtCaption, 0);
+            }
+        }
+
+        #endregion
+
+        //################################################################################
         #region Private Implementation
 
         private void InitializeComponents()
         {
+            //Adjust container panel
             Size = new Size(193, 105);
             MouseDown += DragAndDrop;
 
-            #region Previous Close
-
-            m_PreviousCloseLabel.Text = @"Previous Close:";
-            m_PreviousCloseLabel.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_PreviousCloseLabel.Size = new Size(120, 16);
-            m_PreviousCloseLabel.Location = new Point(1, 1);
-            m_PreviousCloseLabel.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Light(m_PreviousCloseLabel);
-            m_PreviousCloseLabel.MouseDown += DragAndDrop;
-
-            m_PreviousCloseValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_PreviousCloseValue.Size = new Size(70, 16);
-            m_PreviousCloseValue.Location = new Point(122, 1);
-            m_PreviousCloseValue.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Light(m_PreviousCloseValue);
-            m_PreviousCloseValue.MouseDown += DragAndDrop;
+            //Adjust content items
+            AdjustControl(m_PreviousCloseLabel, PaintMode.Light, new Size(120, 16), new Point(1, 1), "Previous Close:");
+            AdjustControl(m_PreviousCloseValue, PaintMode.Light, new Size(70, 16), new Point(122, 1));
+            AdjustControl(m_OpenLabel, PaintMode.Light, new Size(120, 16), new Point(1, 18), "Open:");
+            AdjustControl(m_OpenValue, PaintMode.Light, new Size(70, 16), new Point(122, 18));
+            AdjustControl(m_DailyLowLabel, PaintMode.Normal, new Size(120, 16), new Point(1, 35), "Daily Low:");
+            AdjustControl(m_DailyLowValue, PaintMode.Normal, new Size(70, 16), new Point(122, 35));
+            AdjustControl(m_DailyHighLabel, PaintMode.Normal, new Size(120, 16), new Point(1, 52), "Daily High:");
+            AdjustControl(m_DailyHighValue, PaintMode.Normal, new Size(70, 16), new Point(122, 52));
+            AdjustControl(m_YearlyLowLabel, PaintMode.Dark, new Size(120, 16), new Point(1, 69), "Yearly Low:");
+            AdjustControl(m_YearlyLowValue, PaintMode.Dark, new Size(70, 16), new Point(122, 69));
+            AdjustControl(m_YearlyHighLabel, PaintMode.Dark, new Size(120, 16), new Point(1, 86), "Yearly High:");
+            AdjustControl(m_YearlyHighValue, PaintMode.Dark, new Size(70, 16), new Point(122, 86));
 
             Controls.Add(m_PreviousCloseLabel);
             Controls.Add(m_PreviousCloseValue);
-
-            #endregion
-
-            #region Open
-
-            m_OpenLabel.Text = @"Open:";
-            m_OpenLabel.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_OpenLabel.Size = new Size(120, 16);
-            m_OpenLabel.Location = new Point(1, 18);
-            m_OpenLabel.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Light(m_OpenLabel);
-            m_OpenLabel.MouseDown += DragAndDrop;
-
-            m_OpenValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_OpenValue.Size = new Size(70, 16);
-            m_OpenValue.Location = new Point(122, 18);
-            m_OpenValue.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Light(m_OpenValue);
-            m_OpenValue.MouseDown += DragAndDrop;
-
             Controls.Add(m_OpenLabel);
             Controls.Add(m_OpenValue);
-
-            #endregion
-
-            #region Daily Low
-
-            m_DailyLowLabel.Text = @"Daily Low:";
-            m_DailyLowLabel.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_DailyLowLabel.Size = new Size(120, 16);
-            m_DailyLowLabel.Location = new Point(1, 35);
-            m_DailyLowLabel.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Normal(m_DailyLowLabel);
-            m_DailyLowLabel.MouseDown += DragAndDrop;
-
-            m_DailyLowValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_DailyLowValue.Size = new Size(70, 16);
-            m_DailyLowValue.Location = new Point(122, 35);
-            m_DailyLowValue.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Normal(m_DailyLowValue);
-            m_DailyLowValue.MouseDown += DragAndDrop;
-
             Controls.Add(m_DailyLowLabel);
             Controls.Add(m_DailyLowValue);
-
-            #endregion
-
-            #region Daily High
-
-            m_DailyHighLabel.Text = @"Daily High:";
-            m_DailyHighLabel.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_DailyHighLabel.Size = new Size(120, 16);
-            m_DailyHighLabel.Location = new Point(1, 52);
-            m_DailyHighLabel.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Normal(m_DailyHighLabel);
-            m_DailyHighLabel.MouseDown += DragAndDrop;
-
-            m_DailyHighValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_DailyHighValue.Size = new Size(70, 16);
-            m_DailyHighValue.Location = new Point(122, 52);
-            m_DailyHighValue.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Normal(m_DailyHighValue);
-            m_DailyHighValue.MouseDown += DragAndDrop;
-
             Controls.Add(m_DailyHighLabel);
             Controls.Add(m_DailyHighValue);
-
-            #endregion
-
-            #region Yearly Low
-
-            m_YearlyLowLabel.Text = @"Yearly Low:";
-            m_YearlyLowLabel.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_YearlyLowLabel.Size = new Size(120, 16);
-            m_YearlyLowLabel.Location = new Point(1, 69);
-            m_YearlyLowLabel.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Dark(m_YearlyLowLabel);
-            m_YearlyLowLabel.MouseDown += DragAndDrop;
-
-            m_YearlyLowValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_YearlyLowValue.Size = new Size(70, 16);
-            m_YearlyLowValue.Location = new Point(122, 69);
-            m_YearlyLowValue.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Dark(m_YearlyLowValue);
-            m_YearlyLowValue.MouseDown += DragAndDrop;
-
             Controls.Add(m_YearlyLowLabel);
             Controls.Add(m_YearlyLowValue);
-
-            #endregion
-
-            #region Yearly High
-
-            m_YearlyHighLabel.Text = @"Yearly High:";
-            m_YearlyHighLabel.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_YearlyHighLabel.Size = new Size(120, 16);
-            m_YearlyHighLabel.Location = new Point(1, 86);
-            m_YearlyHighLabel.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Dark(m_YearlyHighLabel);
-            m_YearlyHighLabel.MouseDown += DragAndDrop;
-
-            m_YearlyHighValue.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
-            m_YearlyHighValue.Size = new Size(70, 16);
-            m_YearlyHighValue.Location = new Point(122, 86);
-            m_YearlyHighValue.TextAlign = ContentAlignment.MiddleRight;
-            Painter<T>.Dark(m_YearlyHighValue);
-            m_YearlyHighValue.MouseDown += DragAndDrop;
-
             Controls.Add(m_YearlyHighLabel);
             Controls.Add(m_YearlyHighValue);
+        }
 
-            #endregion
+        private void AdjustControl(Label label, PaintMode paintMode, Size size, Point location, string text = "N/A")
+        {
+            //Adjust text
+            label.Text = text;
+            label.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
+            label.TextAlign = ContentAlignment.MiddleRight;
+
+            //Adjust color
+            Painter<T>.Paint(label, paintMode);
+
+            //Adjust size and location
+            label.Size = size;
+            label.Location = location;
+
+            //Adjust event
+            label.MouseDown += DragAndDrop;
         }
 
         #endregion

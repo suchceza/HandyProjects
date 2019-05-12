@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace HandyTool.Components.Custom
 {
-    internal class DraggablePanel : Panel
+    internal abstract class DraggablePanel : Panel
     {
         //################################################################################
         #region Constants
@@ -37,14 +37,9 @@ namespace HandyTool.Components.Custom
         //################################################################################
         #region Protected Implementation
 
-        protected void DragAndDrop(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Parent.Handle, WmNclButtonDown, HtCaption, 0);
-            }
-        }
+        protected abstract void DragAndDrop(object sender, MouseEventArgs e);
+
+
 
         #endregion
     }

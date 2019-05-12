@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace HandyTool.Components.Custom
 {
-    internal class ImageLabel : Label
+    internal sealed class ImageLabel : Label
     {
         //################################################################################
         #region Fields
@@ -42,13 +42,13 @@ namespace HandyTool.Components.Custom
             Cursor = Cursors.Hand;
 
             //Adjust position
-            AdjustPosition();
+            Location = SetLocation();
 
             //Adjust events
             Click += OnClick;
         }
 
-        private void AdjustPosition()
+        private Point SetLocation()
         {
             int x = m_Origin;
 
@@ -57,7 +57,7 @@ namespace HandyTool.Components.Custom
                 x += 1 + control.Width;
             }
 
-            Location = new Point(x, m_Origin);
+            return new Point(x, m_Origin);
         }
 
         private void OnClick(object sender, EventArgs e)

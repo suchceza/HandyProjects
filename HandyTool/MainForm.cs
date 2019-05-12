@@ -41,6 +41,9 @@ namespace HandyTool
             //var bgnTryPanel = new CurrencyPanel(new BgnTryCurrency(), this, 1000);
             //Controls.Add(bgnTryPanel);
 
+            var hourPanel = new HourPanel(this);
+            Controls.Add(hourPanel);
+
             var toolbarPanel = new ToolbarPanel(this);
             Controls.Add(toolbarPanel);
         }

@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Custom\BackgroundWorkerPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Components\Custom\DraggablePanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -60,6 +63,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\CurrencyPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\HourPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\SummaryPopup.cs">
@@ -141,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\box.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\table.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

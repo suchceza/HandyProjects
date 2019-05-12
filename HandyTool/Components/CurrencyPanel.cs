@@ -29,9 +29,10 @@ namespace HandyTool.Components
 
         private readonly Label m_CurrencyLabel;
         private readonly Label m_CurrencyValue;
-        private Label m_CurrencySettings;
+        private Label m_CurrencySummary;
+
         private readonly Popup m_Popup;
-        private readonly SummaryPopup<Blue> m_CurrencySummary;
+        private readonly SummaryPopup<Blue> m_CurrencySummaryPopup;
 
         private readonly BackgroundWorker m_BackgroundWorker;
 
@@ -62,8 +63,8 @@ namespace HandyTool.Components
             InitializeComponents();
             InitializeBackgroundWorker();
 
-            m_CurrencySummary = new SummaryPopup<Blue>();
-            m_Popup = new Popup(m_CurrencySummary);
+            m_CurrencySummaryPopup = new SummaryPopup<Blue>();
+            m_Popup = new Popup(m_CurrencySummaryPopup);
             Paint += PaintBorder;
 
             m_BackgroundWorker.RunWorkerAsync();
@@ -100,6 +101,16 @@ namespace HandyTool.Components
         {
             m_IsUpdateCancelled = true;
         }
+
+        #endregion
+
+        //################################################################################
+        #region Protected Implementation
+
+        //protected override void DragAndDrop(object sender, MouseEventArgs e)
+        //{
+        //    //this class doesn't support drag and drop functionality
+        //}
 
         #endregion
 
@@ -143,7 +154,7 @@ namespace HandyTool.Components
             m_CurrencyLabel.TextAlign = ContentAlignment.MiddleCenter;
 
             //Style Stuff
-            Painter<Black>.Normal(m_CurrencyLabel);
+            Painter<Black>.Paint(m_CurrencyLabel, PaintMode.Normal);
 
             Controls.Add(m_CurrencyLabel);
 
@@ -167,24 +178,24 @@ namespace HandyTool.Components
             m_CurrencyValue.TextAlign = ContentAlignment.MiddleRight;
 
             //Style Stuff
-            m_CurrencyValue.BackColor = Color.FromArgb(238, 227, 171);
+            Painter<Black>.Paint(m_CurrencyValue, PaintMode.Normal);
 
             Controls.Add(m_CurrencyValue);
 
             #endregion
 
-            #region Currency Settings
+            #region Currency Summary
 
-            m_CurrencySettings = new ImageLabel(this, 2)
+            m_CurrencySummary = new ImageLabel(this, 2)
             {
                 BackgroundImage = Resources.Summary,
                 Size = new Size(18, 18)
             };
 
             //Event Stuff
-            m_CurrencySettings.Click += CurrencySettings_Click;
+            m_CurrencySummary.Click += CurrencySummaryClick;
 
-            Controls.Add(m_CurrencySettings);
+            Controls.Add(m_CurrencySummary);
 
             #endregion
         }
@@ -211,11 +222,11 @@ namespace HandyTool.Components
 
                 if (currencySummary.Actual > m_PreviousValues.Actual)
                 {
-                    Painter<Green>.Light(m_CurrencyValue);
+                    Painter<Green>.Paint(m_CurrencyValue, PaintMode.Light);
                 }
                 else if (currencySummary.Actual < m_PreviousValues.Actual)
                 {
-                    Painter<Red>.Light(m_CurrencyValue);
+                    Painter<Red>.Paint(m_CurrencyValue, PaintMode.Light);
                 }
 
                 m_CurrencyValue.Text = $@"{currencySummary.Actual:F4}";
@@ -234,7 +245,7 @@ namespace HandyTool.Components
         //################################################################################
         #region Event Implementation
 
-        private void CurrencySettings_Click(object sender, EventArgs e)
+        private void CurrencySummaryClick(object sender, EventArgs e)
         {
             if (!m_Popup.Visible)
             {
@@ -250,7 +261,7 @@ namespace HandyTool.Components
                 }
 
                 m_Popup.Show(new Point(Parent.Left - 50, top));
-                m_CurrencySummary.SetValues(m_PreviousValues);
+                m_CurrencySummaryPopup.SetValues(m_PreviousValues);
             }
             else
             {

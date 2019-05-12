@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace HandyTool.Components
 {
-    class TitlePanel : DraggablePanel
+    internal sealed class TitlePanel : DraggablePanel
     {
         //################################################################################
         #region Fields
@@ -28,6 +28,20 @@ namespace HandyTool.Components
         public TitlePanel(Control parent)
         {
             InitializeComponents(parent);
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Protected Implementation
+
+        protected override void DragAndDrop(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Parent.Handle, WmNclButtonDown, HtCaption, 0);
+            }
         }
 
         #endregion
@@ -79,7 +93,7 @@ namespace HandyTool.Components
 
 
             //Style Stuff
-            Painter<Black>.Light(m_TitleLabel);
+            Painter<Black>.Paint(m_TitleLabel, PaintMode.Light);
 
             //Event Stuff
             m_TitleLabel.MouseDown += DragAndDrop;
