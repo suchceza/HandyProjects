@@ -1,6 +1,8 @@
-﻿namespace HandyTool
+﻿using HandyTool.Properties;
+
+namespace HandyTool
 {
-    partial class MainForm
+    partial class MainAppForm
     {
         //################################################################################
         #region Fields
@@ -53,15 +55,14 @@
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Form1";
-            this.TopMost = true;
+            this.Text = "Handy Tool Box v1.0 by Halit Yurtsever";
+            this.TopMost = Settings.Default.AlwaysOnTop;
             this.ShowInTaskbar = false;
             this.ResumeLayout(false);
+            this.Load += Form_Load;
         }
 
         #endregion
-
-
     }
 }
 

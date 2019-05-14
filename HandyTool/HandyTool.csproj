@@ -53,6 +53,9 @@
     <Compile Include="Components\Custom\BackgroundWorkerPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Components\Custom\CustomPanelBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Components\Custom\DraggablePanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -68,7 +71,10 @@
     <Compile Include="Components\HourPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\SummaryPopup.cs">
+    <Compile Include="Components\CurrencySummaryPopup.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\HourSummaryPopup.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\TitlePanel.cs">
@@ -80,17 +86,26 @@
     <Compile Include="Currency\CurrencyOptions.cs" />
     <Compile Include="Currency\CurrencySummary.cs" />
     <Compile Include="Currency\Yahoo.cs" />
-    <Compile Include="Hour\HourCounter.cs" />
+    <Compile Include="CustomApplicationContext.cs" />
+    <Compile Include="Hour\WorkingHours.cs" />
     <Compile Include="Hour\HourUpdatedEventArgs.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="MainAppForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="MainAppForm.Designer.cs">
+      <DependentUpon>MainAppForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomContextMenu.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Currency\CurrencyUpdatedEventArgs.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Style\ColorBase.cs" />
     <Compile Include="Style\ColorPalette.cs" />
     <Compile Include="Style\ColorSet.cs" />
@@ -99,8 +114,8 @@
     <Compile Include="Style\Colors\Green.cs" />
     <Compile Include="Style\Colors\Red.cs" />
     <Compile Include="Style\Painter.cs" />
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="MainAppForm.resx">
+      <DependentUpon>MainAppForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -113,20 +128,15 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -148,10 +158,10 @@
     <None Include="Resources\cross.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\box.png" />
+    <None Include="Resources\table.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\table.png" />
+    <None Include="Resources\Logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

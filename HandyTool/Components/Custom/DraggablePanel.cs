@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace HandyTool.Components.Custom
 {
-    internal abstract class DraggablePanel : Panel
+    internal abstract class DraggablePanel : CustomPanelBase
     {
         //################################################################################
         #region Constants
@@ -26,6 +26,16 @@ namespace HandyTool.Components.Custom
         #endregion
 
         //################################################################################
+        #region Constructor
+
+        protected DraggablePanel(Control parentControl) : base(parentControl)
+        {
+
+        }
+
+        #endregion
+
+        //################################################################################
         #region Properties
 
         internal static int WmNclButtonDown => c_WmNclButtonDown;
@@ -35,11 +45,9 @@ namespace HandyTool.Components.Custom
         #endregion
 
         //################################################################################
-        #region Protected Implementation
+        #region Abstract Methods
 
         protected abstract void DragAndDrop(object sender, MouseEventArgs e);
-
-
 
         #endregion
     }

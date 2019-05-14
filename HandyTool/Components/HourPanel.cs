@@ -6,43 +6,51 @@ using HandyTool.Style.Colors;
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace HandyTool.Components
 {
-    internal sealed class HourPanel : BackgroundWorkerPanel
+    internal class HourPanel : BackgroundWorkerPanel
     {
         //################################################################################
         #region Fields
 
-        private readonly Control m_Parent;
-
         private Label m_HourDetails;
         private readonly TextBox m_HourText;
 
-        private HourCounter m_HourCounter;
+        private WorkingHours m_WorkingHours;
         private bool m_IsCancelled = true;
+
+        private readonly Popup m_Popup;
+        private readonly HourSummaryPopup<Blue> m_HourSummaryPopup;
 
         #endregion
 
         //################################################################################
         #region Constructor
 
-        public HourPanel(Control parent)
+        public HourPanel(Control parentControl) : base(parentControl)
         {
-            m_Parent = parent;
             m_HourText = new TextBox();
 
-            SetPanelPosition();
             InitializeComponents();
 
+            m_HourSummaryPopup = new HourSummaryPopup<Blue>();
+            m_Popup = new Popup(m_HourSummaryPopup);
             Paint += PaintBorder;
 
+            ReadSavedDateTime();
             BackgroundWorker.RunWorkerAsync();
         }
+
+        #endregion
+
+        //################################################################################
+        #region Events
+
+        internal event HourUpdateCallback HourUpdated;
 
         #endregion
 
@@ -56,13 +64,15 @@ namespace HandyTool.Components
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var stopwatch = new Stopwatch();
+            HourUpdated += UpdateHour;
 
             while (!m_IsCancelled)
             {
-                UpdateHour(null);
+                CalculateElapsedTime();
                 Thread.Sleep(1000);
             }
+
+            HourUpdated -= UpdateHour;
         }
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -70,13 +80,13 @@ namespace HandyTool.Components
             m_IsCancelled = true;
         }
 
-        #endregion
-
-        //################################################################################
-        #region Private Implementation
-
-        private void InitializeComponents()
+        protected sealed override void InitializeComponents()
         {
+            TabIndex = 0;
+            TabStop = false;
+            Size = new Size(ParentControl.Width - 2, 22);
+            Visible = Settings.Default.WorkHourSwitch;
+
             #region Hour Text
 
             //Text Stuff
@@ -121,21 +131,85 @@ namespace HandyTool.Components
             #endregion
         }
 
-        private void SetPanelPosition()
+        #endregion
+
+        //################################################################################
+        #region Event Implementation
+
+        private void HourDetails_Click(object sender, EventArgs e)
         {
-            TabIndex = 0;
-            TabStop = false;
-
-            int posY = 1;
-
-            for (int i = 0; i < m_Parent.Controls.Count; i++)
+            if (!m_Popup.Visible)
             {
-                posY += 1 + m_Parent.Controls[i].Height;
-            }
+                var top = Parent.Top;
 
-            Location = new Point(1, posY);
-            Size = new Size(m_Parent.Width - 2, 22);
+                foreach (Control control in Parent.Controls)
+                {
+                    if (control.Name == Name)
+                    {
+                        top += control.Top;
+                        top -= m_Popup.Height - control.Height;
+                    }
+                }
+
+                m_Popup.Show(new Point(Parent.Left - 50, top));
+                m_HourSummaryPopup.SetValues(m_WorkingHours);
+            }
+            else
+            {
+                m_Popup.Close();
+            }
         }
+
+        private void HourText_DoubleClick(object sender, EventArgs e)
+        {
+            m_HourText.ReadOnly = false;
+            m_HourText.SelectAll();
+            m_IsCancelled = true;
+        }
+
+        private void HourText_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13) //enter key pressed
+            {
+                var parsedTime = TryParseClock(m_HourText.Text);
+                m_WorkingHours = new WorkingHours(parsedTime);
+
+                m_HourText.Text = $@"{parsedTime.Hour:00}:{parsedTime.Minute:00}:{parsedTime.Second:00}";
+                m_HourText.ReadOnly = true;
+
+                //save latest hour data
+                Settings.Default.Year = parsedTime.Year;
+                Settings.Default.Month = parsedTime.Month;
+                Settings.Default.Day = parsedTime.Day;
+                Settings.Default.Hour = parsedTime.Hour;
+                Settings.Default.Minute = parsedTime.Minute;
+                Settings.Default.Second = parsedTime.Second;
+                Settings.Default.Save();
+
+                m_IsCancelled = false;
+                BackgroundWorker.RunWorkerAsync();
+            }
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Event Callbacks
+
+        internal virtual void OnHourUpdated(TimeSpan timeSpan)
+        {
+            if (HourUpdated != null)
+            {
+                var args = new HourUpdatedEventArgs { ElapsedTime = timeSpan };
+
+                HourUpdated(args);
+            }
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Private Implementation
 
         private DateTime TryParseClock(string value)
         {
@@ -165,45 +239,34 @@ namespace HandyTool.Components
             }
             else
             {
-                var difference = DateTime.Now - m_HourCounter.ShiftEndTime + m_HourCounter.WorkingHour;
-                m_HourText.Text = $@"{Math.Abs(difference.Hours):00}:{Math.Abs(difference.Minutes):00}:{Math.Abs(difference.Seconds):00}";
+                m_HourText.Text = $@"{args.ElapsedTime.Hours:00}:{args.ElapsedTime.Minutes:00}:{args.ElapsedTime.Seconds:00}";
             }
         }
 
-        #endregion
-
-        //################################################################################
-        #region Event Implementation
-
-        private void PaintBorder(object sender, PaintEventArgs e)
+        private void CalculateElapsedTime()
         {
-            Rectangle border = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
-            CreateGraphics().DrawRectangle(new Pen(Color.White, 1), border);
+            var elapsed = DateTime.Now.Subtract(m_WorkingHours.StartTime).Subtract(m_WorkingHours.LunchBreakHour);
+            OnHourUpdated(elapsed);
         }
 
-        private void HourDetails_Click(object sender, EventArgs e)
+        private void ReadSavedDateTime()
         {
+            var savedDateTime = new DateTime
+            (
+                Settings.Default.Year,
+                Settings.Default.Month,
+                Settings.Default.Day,
+                Settings.Default.Hour,
+                Settings.Default.Minute,
+                Settings.Default.Second
+            );
 
-        }
-
-        private void HourText_DoubleClick(object sender, EventArgs e)
-        {
-            m_HourText.ReadOnly = false;
-            m_HourText.SelectAll();
-            m_IsCancelled = true;
-        }
-
-        private void HourText_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)13) //enter key pressed
+            if (DateTime.Now.Year == savedDateTime.Year &&
+                DateTime.Now.Month == savedDateTime.Month &&
+                DateTime.Now.Day == savedDateTime.Day)
             {
-                var parsedTime = TryParseClock(m_HourText.Text);
-                m_HourCounter = new HourCounter(parsedTime);
-
-                m_HourText.Text = $@"{parsedTime.Hour:00}:{parsedTime.Minute:00}:{parsedTime.Second:00}";
-                m_HourText.ReadOnly = true;
+                m_WorkingHours = new WorkingHours(savedDateTime);
                 m_IsCancelled = false;
-                BackgroundWorker.RunWorkerAsync();
             }
         }
 

@@ -13,18 +13,19 @@ namespace HandyTool.Components.Custom
         private readonly int m_Origin;
         private readonly bool m_IsSwitchable;
 
-        private bool m_IsSwitchOn = true;
+        private bool m_IsSwitchOn;
 
         #endregion
 
         //################################################################################
         #region Constructor
 
-        public ImageLabel(Control parent, int origin, bool isSwitchable = false)
+        public ImageLabel(Control parent, int origin, bool isSwitchable = false, bool isSwitchedOn = false)
         {
             m_Parent = parent;
             m_Origin = origin;
             m_IsSwitchable = isSwitchable;
+            m_IsSwitchOn = isSwitchedOn;
 
             InitializeComponent();
         }
@@ -38,7 +39,7 @@ namespace HandyTool.Components.Custom
         {
             //Adjust style
             BackgroundImageLayout = ImageLayout.Center;
-            BackColor = Color.FromArgb(255, 255, 255);
+            BackColor = !m_IsSwitchOn && m_IsSwitchable ? Color.Black : Color.White;
             Cursor = Cursors.Hand;
 
             //Adjust position

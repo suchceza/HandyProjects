@@ -6,28 +6,22 @@ using System.Windows.Forms;
 
 namespace HandyTool.Components
 {
-    class ToolbarPanel : Panel
+    class ToolbarPanel : CustomPanelBase
     {
         //################################################################################
         #region Fields
 
-        private readonly Control m_Parent;
-
-        private Label m_RateActivateLabel;
-        private Label m_ToolActivateLabel;
-        private Label m_HourActivateLabel;
+        private Label m_CurrencySwitchLabel;
+        private Label m_ToolsetSwitchLabel;
+        private ImageLabel m_WorkHourSwitchLabel;
 
         #endregion
 
         //################################################################################
         #region Constructor
 
-        public ToolbarPanel(Control parent)
+        public ToolbarPanel(Control parentControl) : base(parentControl)
         {
-            m_Parent = parent;
-
-            SetPanelPosition();
-
             InitializeComponents();
             Paint += PaintBorder;
         }
@@ -35,68 +29,97 @@ namespace HandyTool.Components
         #endregion
 
         //################################################################################
-        #region Private Implementation
+        #region Properties
 
-        private void SetPanelPosition()
+        public Panel[] CurrencyPanels { get; set; }
+
+        public Panel ToolsetPanel { get; set; }
+
+        public Panel WorkHourPanel { get; set; }
+
+        #endregion
+
+        //################################################################################
+        #region Protected Implementation
+
+        protected sealed override void InitializeComponents()
         {
             Name = "ToolPanel";
             TabIndex = 0;
             TabStop = false;
+            Size = new Size(ParentControl.Width - 2, 22);
 
-            int posY = 1;
+            #region Currency Switch Label
 
-            for (int i = 0; i < m_Parent.Controls.Count; i++)
-            {
-                posY += 1 + m_Parent.Controls[i].Height;
-            }
-
-            Location = new Point(1, posY);
-            Size = new Size(m_Parent.Width - 2, 22);
-        }
-
-        private void InitializeComponents()
-        {
-            #region Rate Activate Label
-
-            m_RateActivateLabel = new ImageLabel(this, 2, true)
+            var isCurrencySwitchedOn = Settings.Default.CurrencySwitch;
+            m_CurrencySwitchLabel = new ImageLabel(this, 2, true, isCurrencySwitchedOn)
             {
                 BackgroundImage = Resources.Money,
                 Size = new Size(18, 18)
             };
 
-            Controls.Add(m_RateActivateLabel);
+            m_CurrencySwitchLabel.Click += CurrencySwitchLabel_Click;
+
+            Controls.Add(m_CurrencySwitchLabel);
 
             #endregion
 
-            #region Tool Activate Label
+            #region Toolset Switch Label
 
-            m_ToolActivateLabel = new ImageLabel(this, 2, true)
+            m_ToolsetSwitchLabel = new ImageLabel(this, 2, true)
             {
                 BackgroundImage = Resources.Tool,
                 Size = new Size(18, 18)
             };
 
-            Controls.Add(m_ToolActivateLabel);
+            Controls.Add(m_ToolsetSwitchLabel);
 
             #endregion
 
-            #region Hour Activate Label
+            #region WorkHour Switch Label
 
-            m_HourActivateLabel = new ImageLabel(this, 2, true)
+            var isWorkHourSwitchedOn = Settings.Default.WorkHourSwitch;
+            m_WorkHourSwitchLabel = new ImageLabel(this, 2, true, isWorkHourSwitchedOn)
             {
                 BackgroundImage = Resources.Time,
                 Size = new Size(18, 18)
             };
 
-            Controls.Add(m_HourActivateLabel);
+            m_WorkHourSwitchLabel.Click += HourActivateLabel_Click;
+
+            Controls.Add(m_WorkHourSwitchLabel);
 
             #endregion
         }
 
-        private void PaintBorder(object sender, PaintEventArgs e)
+        #endregion
+
+        //################################################################################
+        #region Private Implementation
+
+        private void CurrencySwitchLabel_Click(object sender, System.EventArgs e)
         {
-            Rectangle border = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
-            CreateGraphics().DrawRectangle(new Pen(Color.White, 1), border);
+            foreach (var panel in CurrencyPanels)
+            {
+                panel.Visible = !panel.Visible;
+            }
+
+            Settings.Default.CurrencySwitch = !Settings.Default.CurrencySwitch;
+            Settings.Default.Save();
+
+            ((MainAppForm)ParentControl).ResetPanelPositions();
+            ((MainAppForm)ParentControl).SetFormHeight();
+        }
+
+        private void HourActivateLabel_Click(object sender, System.EventArgs e)
+        {
+            WorkHourPanel.Visible = !WorkHourPanel.Visible;
+
+            Settings.Default.WorkHourSwitch = !Settings.Default.WorkHourSwitch;
+            Settings.Default.Save();
+
+            ((MainAppForm)ParentControl).ResetPanelPositions();
+            ((MainAppForm)ParentControl).SetFormHeight();
         }
 
         #endregion

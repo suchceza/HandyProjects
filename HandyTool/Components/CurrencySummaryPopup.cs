@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace HandyTool.Components
 {
-    internal class SummaryPopup<T> : DraggablePanel where T : ColorBase, new()
+    internal class CurrencySummaryPopup<T> : DraggablePanel where T : ColorBase, new()
     {
         //################################################################################
         #region Fields
@@ -35,7 +35,7 @@ namespace HandyTool.Components
         //################################################################################
         #region Constructor
 
-        public SummaryPopup()
+        public CurrencySummaryPopup() : base(null)
         {
             InitializeComponents();
         }
@@ -69,12 +69,7 @@ namespace HandyTool.Components
             }
         }
 
-        #endregion
-
-        //################################################################################
-        #region Private Implementation
-
-        private void InitializeComponents()
+        protected sealed override void InitializeComponents()
         {
             //Adjust container panel
             Size = new Size(193, 105);
@@ -107,6 +102,11 @@ namespace HandyTool.Components
             Controls.Add(m_YearlyHighLabel);
             Controls.Add(m_YearlyHighValue);
         }
+
+        #endregion
+
+        //################################################################################
+        #region Private Implementation
 
         private void AdjustControl(Label label, PaintMode paintMode, Size size, Point location, string text = "N/A")
         {

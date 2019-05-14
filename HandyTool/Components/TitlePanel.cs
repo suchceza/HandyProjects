@@ -25,9 +25,9 @@ namespace HandyTool.Components
         //################################################################################
         #region Constructor
 
-        public TitlePanel(Control parent)
+        public TitlePanel(Control parentControl) : base(parentControl)
         {
-            InitializeComponents(parent);
+            InitializeComponents();
         }
 
         #endregion
@@ -44,16 +44,11 @@ namespace HandyTool.Components
             }
         }
 
-        #endregion
-
-        //################################################################################
-        #region Private Implementation
-
-        private void InitializeComponents(Control parent)
+        protected override void InitializeComponents()
         {
             Name = "TitlePanel";
             Location = new Point(1, 1);
-            Size = new Size(parent.Width - 2, 16);
+            Size = new Size(ParentControl.Width - 2, 16);
             BackColor = Color.White;
             TabIndex = 0;
             TabStop = false;
@@ -90,7 +85,6 @@ namespace HandyTool.Components
             //Alignment Stuff
             m_TitleLabel.Padding = new Padding(c_Padding);
             m_TitleLabel.TextAlign = ContentAlignment.MiddleLeft;
-
 
             //Style Stuff
             Painter<Black>.Paint(m_TitleLabel, PaintMode.Light);

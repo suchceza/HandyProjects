@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace HandyTool.Components
 {
-    internal class CurrencyPanel : Panel
+    internal class CurrencyPanel : BackgroundWorkerPanel
     {
         //################################################################################
         #region Fields
@@ -25,49 +25,39 @@ namespace HandyTool.Components
 
         private readonly ICurrency m_Currency;
 
-        private readonly Control m_Parent;
-
         private readonly Label m_CurrencyLabel;
         private readonly Label m_CurrencyValue;
         private Label m_CurrencySummary;
 
         private readonly Popup m_Popup;
-        private readonly SummaryPopup<Blue> m_CurrencySummaryPopup;
-
-        private readonly BackgroundWorker m_BackgroundWorker;
+        private readonly CurrencySummaryPopup<Blue> m_CurrencySummaryPopup;
 
         #endregion
 
         //################################################################################
         #region Constructor
 
-        public CurrencyPanel(ICurrency currency, Control parent) : this(currency, parent, 300)
+        public CurrencyPanel(ICurrency currency, Control parentControl) : this(currency, parentControl, 1000)
         {
 
         }
 
-        public CurrencyPanel(ICurrency currency, Control parent, int refreshRate)
+        public CurrencyPanel(ICurrency currency, Control parentControl, int refreshRate) : base(parentControl)
         {
             m_Currency = currency;
-            m_Parent = parent;
-
-            SetPanelPosition();
 
             m_CurrencyLabel = new Label();
             m_CurrencyValue = new Label();
 
-            m_BackgroundWorker = new BackgroundWorker();
-
             RefreshRate = refreshRate; //ms
 
             InitializeComponents();
-            InitializeBackgroundWorker();
 
-            m_CurrencySummaryPopup = new SummaryPopup<Blue>();
+            m_CurrencySummaryPopup = new CurrencySummaryPopup<Blue>();
             m_Popup = new Popup(m_CurrencySummaryPopup);
             Paint += PaintBorder;
 
-            m_BackgroundWorker.RunWorkerAsync();
+            BackgroundWorker.RunWorkerAsync();
         }
 
         #endregion
@@ -80,9 +70,14 @@ namespace HandyTool.Components
         #endregion
 
         //################################################################################
-        #region BackgroundWorker Implementation
+        #region Protected Implementation
 
-        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        protected override void DragAndDrop(object sender, MouseEventArgs e)
+        {
+            //this class doesn't support drag and drop functionality
+        }
+
+        protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             var yahooService = new Yahoo(m_Currency.Source);
 
@@ -97,45 +92,19 @@ namespace HandyTool.Components
             yahooService.CurrencyUpdated -= UpdateCurrency;
         }
 
-        private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             m_IsUpdateCancelled = true;
         }
 
-        #endregion
-
-        //################################################################################
-        #region Protected Implementation
-
-        //protected override void DragAndDrop(object sender, MouseEventArgs e)
-        //{
-        //    //this class doesn't support drag and drop functionality
-        //}
-
-        #endregion
-
-        //################################################################################
-        #region Private Implementation
-
-        private void SetPanelPosition()
+        protected sealed override void InitializeComponents()
         {
             Name = $@"CurrencyPanel_{m_Currency.Name}";
             TabIndex = 0;
             TabStop = false;
+            Size = new Size(ParentControl.Width - 2, 22);
+            Visible = Settings.Default.CurrencySwitch;
 
-            int posY = 1;
-
-            for (int i = 0; i < m_Parent.Controls.Count; i++)
-            {
-                posY += 1 + m_Parent.Controls[i].Height;
-            }
-
-            Location = new Point(1, posY);
-            Size = new Size(m_Parent.Width - 2, 22);
-        }
-
-        private void InitializeComponents()
-        {
             #region Currency Label
 
             //Basic Stuff
@@ -200,14 +169,10 @@ namespace HandyTool.Components
             #endregion
         }
 
-        private void InitializeBackgroundWorker()
-        {
-            m_BackgroundWorker.WorkerReportsProgress = false;
-            m_BackgroundWorker.WorkerSupportsCancellation = false;
+        #endregion
 
-            m_BackgroundWorker.DoWork += BackgroundWorker_DoWork;
-            m_BackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
-        }
+        //################################################################################
+        #region Private Implementation
 
         private void UpdateCurrency(CurrencyUpdatedEventArgs args)
         {
@@ -232,12 +197,6 @@ namespace HandyTool.Components
                 m_CurrencyValue.Text = $@"{currencySummary.Actual:F4}";
                 m_PreviousValues = currencySummary;
             }
-        }
-
-        private void PaintBorder(object sender, PaintEventArgs e)
-        {
-            Rectangle border = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
-            CreateGraphics().DrawRectangle(new Pen(Color.White, 1), border);
         }
 
         #endregion
