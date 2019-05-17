@@ -17,11 +17,12 @@ namespace HandyTool.Components
         //################################################################################
         #region Fields
 
-        private Label m_HourDetails;
         private readonly TextBox m_HourText;
+        private ImageLabel m_HourDetails;
+        private ImageLabel m_HourStop;
 
         private WorkingHours m_WorkingHours;
-        private bool m_IsCancelled = true;
+        private bool m_IsCancelled;
 
         private readonly Popup m_Popup;
         private readonly HourSummaryPopup<Blue> m_HourSummaryPopup;
@@ -34,6 +35,7 @@ namespace HandyTool.Components
         public HourPanel(Control parentControl) : base(parentControl)
         {
             m_HourText = new TextBox();
+            m_IsCancelled = Settings.Default.WorkHourStopped;
 
             InitializeComponents();
 
@@ -42,8 +44,14 @@ namespace HandyTool.Components
             Paint += PaintBorder;
 
             ReadSavedDateTime();
-            BackgroundWorker.RunWorkerAsync();
         }
+
+        #endregion
+
+        //################################################################################
+        #region Properties
+
+        public string ElapsedTime => m_HourText.Text;
 
         #endregion
 
@@ -57,13 +65,10 @@ namespace HandyTool.Components
         //################################################################################
         #region Protected Implementation
 
-        protected override void DragAndDrop(object sender, MouseEventArgs e)
-        {
-            //this class doesn't support drag and drop functionality
-        }
-
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            m_HourStop.BackgroundImage = Resources.StopProcess;
+
             HourUpdated += UpdateHour;
 
             while (!m_IsCancelled)
@@ -77,11 +82,14 @@ namespace HandyTool.Components
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            m_HourStop.BackgroundImage = Resources.RunProcess;
             m_IsCancelled = true;
+            WriteLogsIfHappened(e.Error, e.Result, "WorkHour", e.Cancelled);
         }
 
         protected sealed override void InitializeComponents()
         {
+            Name = $@"WorkHourPanel";
             TabIndex = 0;
             TabStop = false;
             Size = new Size(ParentControl.Width - 2, 22);
@@ -90,7 +98,7 @@ namespace HandyTool.Components
             #region Hour Text
 
             //Text Stuff
-            m_HourText.Text = @"not set";
+            m_HourText.Text = @"N/A";
             m_HourText.Font = new Font(new FontFamily("Consolas"), 11, FontStyle.Bold);
             m_HourText.BorderStyle = BorderStyle.None;
             m_HourText.TextAlign = HorizontalAlignment.Center;
@@ -117,10 +125,9 @@ namespace HandyTool.Components
 
             #region Hour Details
 
-            m_HourDetails = new ImageLabel(this, 2)
+            m_HourDetails = new ImageLabel(this, 2, "Display work hour details")
             {
-                BackgroundImage = Resources.Table,
-                Size = new Size(18, 18)
+                BackgroundImage = Resources.SummaryWorkHour
             };
 
             //Event Stuff
@@ -129,12 +136,26 @@ namespace HandyTool.Components
             Controls.Add(m_HourDetails);
 
             #endregion
+
+            #region Hour Stop
+
+            m_HourStop = new ImageLabel(this, 2, "Start/Stop hour counting")
+            {
+                BackgroundImage = Settings.Default.WorkHourStopped ? Resources.RunProcess : Resources.StopProcess
+            };
+
+            //Event Stuff
+            m_HourStop.Click += HourStop_Click;
+
+            Controls.Add(m_HourStop);
+
+            #endregion
         }
 
         #endregion
 
         //################################################################################
-        #region Event Implementation
+        #region Event Handler Methods
 
         private void HourDetails_Click(object sender, EventArgs e)
         {
@@ -158,6 +179,25 @@ namespace HandyTool.Components
             {
                 m_Popup.Close();
             }
+        }
+
+        private void HourStop_Click(object sender, EventArgs e)
+        {
+            m_IsCancelled = !m_IsCancelled;
+
+            if (m_IsCancelled)
+            {
+                m_HourStop.BackgroundImage = Resources.RunProcess;
+                m_HourText.Text = @"N/A";
+            }
+            else
+            {
+                m_HourStop.BackgroundImage = Resources.StopProcess;
+                ReadSavedDateTime();
+            }
+
+            Settings.Default.WorkHourStopped = m_IsCancelled;
+            Settings.Default.Save();
         }
 
         private void HourText_DoubleClick(object sender, EventArgs e)
@@ -239,7 +279,17 @@ namespace HandyTool.Components
             }
             else
             {
-                m_HourText.Text = $@"{args.ElapsedTime.Hours:00}:{args.ElapsedTime.Minutes:00}:{args.ElapsedTime.Seconds:00}";
+                //work hour exceeds 9 hours and 30 minutes
+                if (args.ElapsedTime > TimeSpan.FromMinutes(570))
+                {
+                    Painter<Red>.Paint(m_HourText, PaintMode.Normal);
+
+                    //todo: Show a popup message that work hour comes to deadline
+                }
+
+                m_HourText.Text = $@"{args.ElapsedTime.Hours:00}:" +
+                                  $@"{args.ElapsedTime.Minutes:00}." +
+                                  $@"{args.ElapsedTime.Seconds:00}";
             }
         }
 
@@ -263,10 +313,11 @@ namespace HandyTool.Components
 
             if (DateTime.Now.Year == savedDateTime.Year &&
                 DateTime.Now.Month == savedDateTime.Month &&
-                DateTime.Now.Day == savedDateTime.Day)
+                DateTime.Now.Day == savedDateTime.Day &&
+                !m_IsCancelled)
             {
                 m_WorkingHours = new WorkingHours(savedDateTime);
-                m_IsCancelled = false;
+                BackgroundWorker.RunWorkerAsync();
             }
         }
 

@@ -33,7 +33,7 @@ namespace HandyTool.Components
 
         public Panel[] CurrencyPanels { get; set; }
 
-        public Panel ToolsetPanel { get; set; }
+        public Panel[] ToolsetPanels { get; set; }
 
         public Panel WorkHourPanel { get; set; }
 
@@ -52,13 +52,12 @@ namespace HandyTool.Components
             #region Currency Switch Label
 
             var isCurrencySwitchedOn = Settings.Default.CurrencySwitch;
-            m_CurrencySwitchLabel = new ImageLabel(this, 2, true, isCurrencySwitchedOn)
+            m_CurrencySwitchLabel = new ImageLabel(this, 2, "Show/Hide currency info", true, isCurrencySwitchedOn)
             {
-                BackgroundImage = Resources.Money,
-                Size = new Size(18, 18)
+                BackgroundImage = Resources.Money
             };
 
-            m_CurrencySwitchLabel.Click += CurrencySwitchLabel_Click;
+            m_CurrencySwitchLabel.Click += CurrencySwitch_Click;
 
             Controls.Add(m_CurrencySwitchLabel);
 
@@ -66,11 +65,13 @@ namespace HandyTool.Components
 
             #region Toolset Switch Label
 
-            m_ToolsetSwitchLabel = new ImageLabel(this, 2, true)
+            var isToolsetSwitchedOn = Settings.Default.ToolsetSwitch;
+            m_ToolsetSwitchLabel = new ImageLabel(this, 2, "Show/Hide command tools", true, isToolsetSwitchedOn)
             {
-                BackgroundImage = Resources.Tool,
-                Size = new Size(18, 18)
+                BackgroundImage = Resources.Tool
             };
+
+            m_ToolsetSwitchLabel.Click += ToolsetSwitch_Click;
 
             Controls.Add(m_ToolsetSwitchLabel);
 
@@ -79,13 +80,12 @@ namespace HandyTool.Components
             #region WorkHour Switch Label
 
             var isWorkHourSwitchedOn = Settings.Default.WorkHourSwitch;
-            m_WorkHourSwitchLabel = new ImageLabel(this, 2, true, isWorkHourSwitchedOn)
+            m_WorkHourSwitchLabel = new ImageLabel(this, 2, "Show/Hide work hour info", true, isWorkHourSwitchedOn)
             {
-                BackgroundImage = Resources.Time,
-                Size = new Size(18, 18)
+                BackgroundImage = Resources.Time
             };
 
-            m_WorkHourSwitchLabel.Click += HourActivateLabel_Click;
+            m_WorkHourSwitchLabel.Click += WorkHourSwitch_Click;
 
             Controls.Add(m_WorkHourSwitchLabel);
 
@@ -95,9 +95,9 @@ namespace HandyTool.Components
         #endregion
 
         //################################################################################
-        #region Private Implementation
+        #region Event Handler Methods
 
-        private void CurrencySwitchLabel_Click(object sender, System.EventArgs e)
+        private void CurrencySwitch_Click(object sender, System.EventArgs e)
         {
             foreach (var panel in CurrencyPanels)
             {
@@ -105,17 +105,35 @@ namespace HandyTool.Components
             }
 
             Settings.Default.CurrencySwitch = !Settings.Default.CurrencySwitch;
-            Settings.Default.Save();
-
-            ((MainAppForm)ParentControl).ResetPanelPositions();
-            ((MainAppForm)ParentControl).SetFormHeight();
+            SaveSettingsAndResetForm();
         }
 
-        private void HourActivateLabel_Click(object sender, System.EventArgs e)
+        private void ToolsetSwitch_Click(object sender, System.EventArgs e)
+        {
+            foreach (var panel in ToolsetPanels)
+            {
+                panel.Visible = !panel.Visible;
+            }
+
+            Settings.Default.ToolsetSwitch = !Settings.Default.ToolsetSwitch;
+            SaveSettingsAndResetForm();
+        }
+
+        private void WorkHourSwitch_Click(object sender, System.EventArgs e)
         {
             WorkHourPanel.Visible = !WorkHourPanel.Visible;
 
             Settings.Default.WorkHourSwitch = !Settings.Default.WorkHourSwitch;
+            SaveSettingsAndResetForm();
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Private Implementation
+
+        private void SaveSettingsAndResetForm()
+        {
             Settings.Default.Save();
 
             ((MainAppForm)ParentControl).ResetPanelPositions();

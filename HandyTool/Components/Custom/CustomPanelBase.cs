@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using HandyTool.Logging;
+
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HandyTool.Components.Custom
@@ -19,6 +21,8 @@ namespace HandyTool.Components.Custom
         #region Properties
 
         protected Control ParentControl { get; }
+
+        protected Logger Logger => ((MainAppForm)ParentControl).Logger;
 
         #endregion
 

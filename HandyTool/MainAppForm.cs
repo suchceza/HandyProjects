@@ -1,5 +1,8 @@
-﻿using HandyTool.Components;
+﻿using HandyTool.Commands;
+using HandyTool.Components;
 using HandyTool.Currency;
+using HandyTool.Logging;
+using HandyTool.Properties;
 
 using System.Drawing;
 using System.Linq;
@@ -14,6 +17,8 @@ namespace HandyTool
 
         public MainAppForm()
         {
+            Logger = new Logger();
+
             InitializeComponent();
             InitializePanels();
         }
@@ -25,6 +30,8 @@ namespace HandyTool
 
         public ContextMenu CustomContextMenu { get; set; }
 
+        internal Logger Logger { get; }
+
         #endregion
 
         //################################################################################
@@ -35,7 +42,8 @@ namespace HandyTool
             ResetPanelPositions();
             SetFormHeight();
             SetFormPosition();
-            //Enabled = false;
+
+            Opacity = Settings.Default.Opacity;
         }
 
         #endregion
@@ -89,28 +97,42 @@ namespace HandyTool
 
         private void InitializePanels()
         {
+            //-- About Panel -------------------------------------------------------------
+            var aboutPanel = new AboutPanel(this);
+            Controls.Add(aboutPanel);
+
+            //-- Title Panel -------------------------------------------------------------
             var titlePanel = new TitlePanel(this);
             Controls.Add(titlePanel);
 
+            //-- Currency Panels ---------------------------------------------------------
             var eurTryPanel = new CurrencyPanel(new EurTryCurrency(), this);
             Controls.Add(eurTryPanel);
 
             var eurUsdPanel = new CurrencyPanel(new EurUsdCurrency(), this, 5000);
             Controls.Add(eurUsdPanel);
 
-            //var eurBgnPanel = new CurrencyPanel(new EurBgnCurrency(), this, 10000);
-            //Controls.Add(eurBgnPanel);
+            //-- Process Panels ----------------------------------------------------------
+            var processKillPanel = new CommandPanel(new ProcessKiller(), this, "Kill TIA Processes");
+            Controls.Add(processKillPanel);
 
-            //var bgnTryPanel = new CurrencyPanel(new BgnTryCurrency(), this, 10000);
-            //Controls.Add(bgnTryPanel);
-
+            //-- WorkHour Panel ----------------------------------------------------------
             var hourPanel = new HourPanel(this);
             Controls.Add(hourPanel);
 
+            //-- Toolbar Panel -----------------------------------------------------------
             var toolbarPanel = new ToolbarPanel(this);
-            toolbarPanel.CurrencyPanels = new Panel[] { eurTryPanel, eurUsdPanel/*, eurBgnPanel, bgnTryPanel*/ };
+            toolbarPanel.CurrencyPanels = new Panel[]
+            {
+                eurTryPanel,
+                eurUsdPanel
+            };
+            toolbarPanel.ToolsetPanels = new Panel[]
+            {
+                processKillPanel
+            };
             toolbarPanel.WorkHourPanel = hourPanel;
-            toolbarPanel.ToolsetPanel = null;
+
             Controls.Add(toolbarPanel);
         }
 

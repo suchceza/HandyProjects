@@ -103,9 +103,69 @@ namespace HandyTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Summary {
+        internal static System.Drawing.Bitmap ProcessSettings {
             get {
-                object obj = ResourceManager.GetObject("Summary", resourceCulture);
+                object obj = ResourceManager.GetObject("ProcessSettings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RefreshProcessDisabled {
+            get {
+                object obj = ResourceManager.GetObject("RefreshProcessDisabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RefreshProcessEnabled {
+            get {
+                object obj = ResourceManager.GetObject("RefreshProcessEnabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RunProcess {
+            get {
+                object obj = ResourceManager.GetObject("RunProcess", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap StopProcess {
+            get {
+                object obj = ResourceManager.GetObject("StopProcess", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SummaryCurrency {
+            get {
+                object obj = ResourceManager.GetObject("SummaryCurrency", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SummaryWorkHour {
+            get {
+                object obj = ResourceManager.GetObject("SummaryWorkHour", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

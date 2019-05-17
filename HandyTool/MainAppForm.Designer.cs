@@ -48,14 +48,14 @@ namespace HandyTool
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.Size = new System.Drawing.Size(166, 318);
+            this.Size = new System.Drawing.Size(185, 318);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Handy Tool Box v1.0 by Halit Yurtsever";
+            this.Text = "Handy Box v1.0 by Halit Yurtsever";
             this.TopMost = Settings.Default.AlwaysOnTop;
             this.ShowInTaskbar = false;
             this.ResumeLayout(false);

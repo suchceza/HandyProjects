@@ -20,12 +20,15 @@ namespace HandyTool.Components.Custom
         //################################################################################
         #region Constructor
 
-        public ImageLabel(Control parent, int origin, bool isSwitchable = false, bool isSwitchedOn = false)
+        public ImageLabel(Control parent, int origin, string tooltip, bool isSwitchable = false, bool isSwitchedOn = false)
         {
             m_Parent = parent;
             m_Origin = origin;
             m_IsSwitchable = isSwitchable;
             m_IsSwitchOn = isSwitchedOn;
+
+            var toolTip = new ToolTip();
+            toolTip.SetToolTip(this, tooltip);
 
             InitializeComponent();
         }
@@ -42,7 +45,8 @@ namespace HandyTool.Components.Custom
             BackColor = !m_IsSwitchOn && m_IsSwitchable ? Color.Black : Color.White;
             Cursor = Cursors.Hand;
 
-            //Adjust position
+            //Adjust position and size
+            Size = new Size(18, 18);
             Location = SetLocation();
 
             //Adjust events

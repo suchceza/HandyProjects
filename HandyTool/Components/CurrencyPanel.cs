@@ -27,7 +27,8 @@ namespace HandyTool.Components
 
         private readonly Label m_CurrencyLabel;
         private readonly Label m_CurrencyValue;
-        private Label m_CurrencySummary;
+        private ImageLabel m_CurrencySummary;
+        private ImageLabel m_CurrencyRefresh;
 
         private readonly Popup m_Popup;
         private readonly CurrencySummaryPopup<Blue> m_CurrencySummaryPopup;
@@ -67,15 +68,14 @@ namespace HandyTool.Components
 
         public int RefreshRate { get; set; }
 
+        public string CurrencyName => m_Currency.Name;
+
+        public string CurrentRateValue => $"{m_PreviousValues.Actual:F4}";
+
         #endregion
 
         //################################################################################
         #region Protected Implementation
-
-        protected override void DragAndDrop(object sender, MouseEventArgs e)
-        {
-            //this class doesn't support drag and drop functionality
-        }
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -83,18 +83,29 @@ namespace HandyTool.Components
 
             yahooService.CurrencyUpdated += UpdateCurrency;
 
-            while (!m_IsUpdateCancelled)
+            try
             {
-                yahooService.GetRateData();
-                Thread.Sleep(500);
+                while (!m_IsUpdateCancelled)
+                {
+                    yahooService.GetRateData();
+                    Thread.Sleep(500);
+                }
             }
-
-            yahooService.CurrencyUpdated -= UpdateCurrency;
+            finally
+            {
+                yahooService.CurrencyUpdated -= UpdateCurrency;
+            }
         }
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            //if any error occurs and thread is killed
             m_IsUpdateCancelled = true;
+            Painter<Black>.Paint(m_CurrencyValue, PaintMode.Normal);
+            m_CurrencyValue.Text = @"N/A";
+            m_CurrencyRefresh.Enabled = true;
+            m_CurrencyRefresh.BackgroundImage = Resources.RefreshProcessEnabled;
+            WriteLogsIfHappened(e.Error, e.Result, $"Currency[{m_Currency.Name}]", e.Cancelled);
         }
 
         protected sealed override void InitializeComponents()
@@ -155,16 +166,30 @@ namespace HandyTool.Components
 
             #region Currency Summary
 
-            m_CurrencySummary = new ImageLabel(this, 2)
+            m_CurrencySummary = new ImageLabel(this, 2, "Display summary of the currency rate")
             {
-                BackgroundImage = Resources.Summary,
-                Size = new Size(18, 18)
+                BackgroundImage = Resources.SummaryCurrency
             };
 
             //Event Stuff
-            m_CurrencySummary.Click += CurrencySummaryClick;
+            m_CurrencySummary.Click += CurrencySummary_Click;
 
             Controls.Add(m_CurrencySummary);
+
+            #endregion
+
+            #region Currency Refresh
+
+            m_CurrencyRefresh = new ImageLabel(this, 2, "Refresh fetching of the currency rate")
+            {
+                BackgroundImage = Resources.RefreshProcessDisabled,
+                Enabled = false
+            };
+
+            //Event Stuff
+            m_CurrencyRefresh.Click += CurrencyRefresh_Click;
+
+            Controls.Add(m_CurrencyRefresh);
 
             #endregion
         }
@@ -202,9 +227,9 @@ namespace HandyTool.Components
         #endregion
 
         //################################################################################
-        #region Event Implementation
+        #region Event Handler Methods
 
-        private void CurrencySummaryClick(object sender, EventArgs e)
+        private void CurrencySummary_Click(object sender, EventArgs e)
         {
             if (!m_Popup.Visible)
             {
@@ -226,6 +251,14 @@ namespace HandyTool.Components
             {
                 m_Popup.Close();
             }
+        }
+
+        private void CurrencyRefresh_Click(object sender, EventArgs e)
+        {
+            m_IsUpdateCancelled = false;
+            m_CurrencyRefresh.Enabled = false;
+            m_CurrencyRefresh.BackgroundImage = Resources.RefreshProcessDisabled;
+            BackgroundWorker.RunWorkerAsync();
         }
 
         #endregion

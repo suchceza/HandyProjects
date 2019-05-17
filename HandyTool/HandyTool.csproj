@@ -39,6 +39,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +51,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AutoDebugFileCreator.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ProcessKiller.cs" />
+    <Compile Include="Commands\ProxyUpdater.cs" />
+    <Compile Include="Commands\TempFolderCleaner.cs" />
+    <Compile Include="Components\AboutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\CommandPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Components\Custom\BackgroundWorkerPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -89,13 +101,15 @@
     <Compile Include="CustomApplicationContext.cs" />
     <Compile Include="Hour\WorkingHours.cs" />
     <Compile Include="Hour\HourUpdatedEventArgs.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LogData.cs" />
     <Compile Include="MainAppForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainAppForm.Designer.cs">
       <DependentUpon>MainAppForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomContextMenu.cs">
+    <Compile Include="Components\CustomContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
@@ -163,5 +177,24 @@
   <ItemGroup>
     <None Include="Resources\Logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\page_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\process_run_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\process_refresh_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\process_stop_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\process_settings_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\process_refresh_black.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
