@@ -1,23 +1,21 @@
 ﻿using System;
+using System.Text;
 
 namespace HandyTool.Commands
 {
-    class AutoDebugFileCreator : ICommand
+    internal class AutoDebugFileCreator : ICommand
     {
         //################################################################################
         #region Fields
 
-        #endregion
-
-        //################################################################################
-        #region Constructor
+        private StringBuilder m_Output = new StringBuilder();
 
         #endregion
 
         //################################################################################
         #region ICommand Implementation
 
-        string ICommand.Output { get; }
+        string ICommand.Output => m_Output.ToString();
 
         void ICommand.Execute()
         {

@@ -50,7 +50,7 @@ namespace HandyTool.Components
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            WriteLogsIfHappened(e.Error, e.Result, $"Command[{m_CommandName}]", e.Cancelled, m_Command.Output);
+            WriteLogsIfHappened(e.Error, $"Command[{m_CommandName}]", e.Cancelled, m_Command.Output);
         }
 
         protected sealed override void InitializeComponents()

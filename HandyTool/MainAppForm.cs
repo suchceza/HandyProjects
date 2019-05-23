@@ -99,26 +99,20 @@ namespace HandyTool
         {
             //-- About Panel -------------------------------------------------------------
             var aboutPanel = new AboutPanel(this);
-            Controls.Add(aboutPanel);
 
             //-- Title Panel -------------------------------------------------------------
             var titlePanel = new TitlePanel(this);
-            Controls.Add(titlePanel);
 
             //-- Currency Panels ---------------------------------------------------------
             var eurTryPanel = new CurrencyPanel(new EurTryCurrency(), this);
-            Controls.Add(eurTryPanel);
-
             var eurUsdPanel = new CurrencyPanel(new EurUsdCurrency(), this, 5000);
-            Controls.Add(eurUsdPanel);
 
             //-- Process Panels ----------------------------------------------------------
             var processKillPanel = new CommandPanel(new ProcessKiller(), this, "Kill TIA Processes");
-            Controls.Add(processKillPanel);
+            var autoDebugPanel = new CommandPanel(new AutoDebugFileCreator(), this, "AutoDebug File Create");
 
             //-- WorkHour Panel ----------------------------------------------------------
             var hourPanel = new HourPanel(this);
-            Controls.Add(hourPanel);
 
             //-- Toolbar Panel -----------------------------------------------------------
             var toolbarPanel = new ToolbarPanel(this);
@@ -129,11 +123,18 @@ namespace HandyTool
             };
             toolbarPanel.ToolsetPanels = new Panel[]
             {
-                processKillPanel
+                processKillPanel,
+                autoDebugPanel
             };
             toolbarPanel.WorkHourPanel = hourPanel;
 
+            //-- Add Panels in order -----------------------------------------------------
+            Controls.Add(aboutPanel);
+
+            Controls.Add(titlePanel);
             Controls.Add(toolbarPanel);
+
+            toolbarPanel.AddSubPanels();
         }
 
         private void SetFormPosition()

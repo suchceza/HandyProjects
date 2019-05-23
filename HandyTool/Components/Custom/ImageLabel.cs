@@ -14,6 +14,8 @@ namespace HandyTool.Components.Custom
         private readonly bool m_IsSwitchable;
 
         private bool m_IsSwitchOn;
+        private readonly Color m_SwitchOnColor = Color.FromArgb(255, 255, 255);
+        private readonly Color m_SwitchOffColor = Color.FromArgb(68, 68, 68);
 
         #endregion
 
@@ -42,7 +44,7 @@ namespace HandyTool.Components.Custom
         {
             //Adjust style
             BackgroundImageLayout = ImageLayout.Center;
-            BackColor = !m_IsSwitchOn && m_IsSwitchable ? Color.Black : Color.White;
+            BackColor = !m_IsSwitchOn && m_IsSwitchable ? m_SwitchOffColor : m_SwitchOnColor;
             Cursor = Cursors.Hand;
 
             //Adjust position and size
@@ -70,7 +72,7 @@ namespace HandyTool.Components.Custom
             if (m_IsSwitchable)
             {
                 m_IsSwitchOn = !m_IsSwitchOn;
-                BackColor = m_IsSwitchOn ? Color.White : Color.Black;
+                BackColor = m_IsSwitchOn ? m_SwitchOnColor : m_SwitchOffColor;
             }
         }
 

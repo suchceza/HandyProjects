@@ -5,6 +5,7 @@ using HandyTool.Style;
 using HandyTool.Style.Colors;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
@@ -30,8 +31,8 @@ namespace HandyTool.Components
         private ImageLabel m_CurrencySummary;
         private ImageLabel m_CurrencyRefresh;
 
-        private readonly Popup m_Popup;
-        private readonly CurrencySummaryPopup<Blue> m_CurrencySummaryPopup;
+        private readonly PopupContainer m_Popup;
+        private readonly Popup<Blue> m_SummaryPopup;
 
         #endregion
 
@@ -54,8 +55,20 @@ namespace HandyTool.Components
 
             InitializeComponents();
 
-            m_CurrencySummaryPopup = new CurrencySummaryPopup<Blue>();
-            m_Popup = new Popup(m_CurrencySummaryPopup);
+            m_SummaryPopup = new Popup<Blue>
+            (
+                new List<PopupItem>
+                {
+                    new PopupItem{ Title = "Previous Close", Value = "N/A", Style = PaintMode.Light },
+                    new PopupItem{ Title = "Open", Value = "N/A", Style = PaintMode.Light },
+                    new PopupItem{ Title = "Daily Low", Value = "N/A", Style = PaintMode.Normal },
+                    new PopupItem{ Title = "Daily High", Value = "N/A", Style = PaintMode.Normal },
+                    new PopupItem{ Title = "Yearly Low", Value = "N/A", Style = PaintMode.Dark },
+                    new PopupItem{ Title = "Yearly High", Value = "N/A", Style = PaintMode.Dark }
+                }
+            );
+
+            m_Popup = new PopupContainer(m_SummaryPopup);
             Paint += PaintBorder;
 
             BackgroundWorker.RunWorkerAsync();
@@ -87,7 +100,7 @@ namespace HandyTool.Components
             {
                 while (!m_IsUpdateCancelled)
                 {
-                    yahooService.GetRateData();
+                    yahooService.GetRateData(sender, e);
                     Thread.Sleep(500);
                 }
             }
@@ -105,7 +118,8 @@ namespace HandyTool.Components
             m_CurrencyValue.Text = @"N/A";
             m_CurrencyRefresh.Enabled = true;
             m_CurrencyRefresh.BackgroundImage = Resources.RefreshProcessEnabled;
-            WriteLogsIfHappened(e.Error, e.Result, $"Currency[{m_Currency.Name}]", e.Cancelled);
+
+            WriteLogsIfHappened(e.Error, $"Currency[{m_Currency.Name}]", e.Cancelled);
         }
 
         protected sealed override void InitializeComponents()
@@ -245,7 +259,15 @@ namespace HandyTool.Components
                 }
 
                 m_Popup.Show(new Point(Parent.Left - 50, top));
-                m_CurrencySummaryPopup.SetValues(m_PreviousValues);
+                m_SummaryPopup.SetValues(new List<string>
+                {
+                    $@"{m_PreviousValues.PreviousClose:F4}",
+                    $@"{m_PreviousValues.Open:F4}",
+                    $@"{m_PreviousValues.DayRangeLow:F4}",
+                    $@"{m_PreviousValues.DayRangeHigh:F4}",
+                    $@"{m_PreviousValues.YearRangeLow:F4}",
+                    $@"{m_PreviousValues.YearRangeHigh:F4}"
+                });
             }
             else
             {

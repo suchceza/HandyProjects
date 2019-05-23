@@ -38,7 +38,7 @@ namespace HandyTool.Components.Custom
         //################################################################################
         #region Protected Implementation
 
-        protected void WriteLogsIfHappened(Exception exception, object result, string actionName, bool isCancelled, string processData = null)
+        protected void WriteLogsIfHappened(Exception exception, string actionName, bool isCancelled, string processData = null)
         {
             var logDateTime = $"{DateTime.Now.ToString("yyyy.MM.dd - HH:mm:ss.fffff")}";
             var logMessage = $"{logDateTime}\tExecuted Action: {actionName}";
@@ -50,9 +50,6 @@ namespace HandyTool.Components.Custom
                 var subLogItemProcessData = new LogData(processData);
                 mainLogItem.AddInnerLogItem(subLogItemProcessData);
             }
-
-            //-- log result -------------------------------------------------------------------------
-            //todo: Gather results of BackgroundWorker thread
 
             //-- log exception ----------------------------------------------------------------------
             if (exception != null)
@@ -89,8 +86,8 @@ namespace HandyTool.Components.Custom
         {
             var logMessage = string.Empty;
             var messageHeader = isInnerException ? "Inner " : "";
-            logMessage += $@"{messageHeader}Exception Message: {exception.Message}\n";
-            logMessage += $@"{exception.StackTrace}";
+            logMessage += $"{messageHeader}Exception Message: {exception.Message}\n";
+            logMessage += $"{exception.StackTrace}";
 
             var childLogItem = new LogData(logMessage);
             parentLogItem.AddInnerLogItem(childLogItem);

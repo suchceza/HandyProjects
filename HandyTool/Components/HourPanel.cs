@@ -5,6 +5,7 @@ using HandyTool.Style;
 using HandyTool.Style.Colors;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
@@ -17,6 +18,8 @@ namespace HandyTool.Components
         //################################################################################
         #region Fields
 
+        private TimeSpan m_ReminderStartLimit = new TimeSpan(0, 30, 0);
+
         private readonly TextBox m_HourText;
         private ImageLabel m_HourDetails;
         private ImageLabel m_HourStop;
@@ -24,8 +27,8 @@ namespace HandyTool.Components
         private WorkingHours m_WorkingHours;
         private bool m_IsCancelled;
 
-        private readonly Popup m_Popup;
-        private readonly HourSummaryPopup<Blue> m_HourSummaryPopup;
+        private readonly PopupContainer m_Popup;
+        private readonly Popup<Blue> m_SummaryPopup;
 
         #endregion
 
@@ -35,12 +38,22 @@ namespace HandyTool.Components
         public HourPanel(Control parentControl) : base(parentControl)
         {
             m_HourText = new TextBox();
+            m_WorkingHours = new WorkingHours();
             m_IsCancelled = Settings.Default.WorkHourStopped;
 
             InitializeComponents();
 
-            m_HourSummaryPopup = new HourSummaryPopup<Blue>();
-            m_Popup = new Popup(m_HourSummaryPopup);
+            m_SummaryPopup = new Popup<Blue>
+            (
+                new List<PopupItem>
+                {
+                    new PopupItem{ Title = "Start", Value = "00:00:00", Style = PaintMode.Light },
+                    new PopupItem{ Title = "Finish", Value = "00:00:00", Style = PaintMode.Light },
+                    new PopupItem{ Title = "Deadline", Value = "00:00:00", Style = PaintMode.Dark }
+                }
+            );
+
+            m_Popup = new PopupContainer(m_SummaryPopup);
             Paint += PaintBorder;
 
             ReadSavedDateTime();
@@ -84,7 +97,7 @@ namespace HandyTool.Components
         {
             m_HourStop.BackgroundImage = Resources.RunProcess;
             m_IsCancelled = true;
-            WriteLogsIfHappened(e.Error, e.Result, "WorkHour", e.Cancelled);
+            WriteLogsIfHappened(e.Error, "WorkHour", e.Cancelled);
         }
 
         protected sealed override void InitializeComponents()
@@ -173,7 +186,12 @@ namespace HandyTool.Components
                 }
 
                 m_Popup.Show(new Point(Parent.Left - 50, top));
-                m_HourSummaryPopup.SetValues(m_WorkingHours);
+                m_SummaryPopup.SetValues(new List<string>
+                {
+                    m_WorkingHours.StartTimeString(),
+                    m_WorkingHours.FinishTimeString(),
+                    m_WorkingHours.DeadlineTimeString()
+                });
             }
             else
             {
@@ -184,6 +202,7 @@ namespace HandyTool.Components
         private void HourStop_Click(object sender, EventArgs e)
         {
             m_IsCancelled = !m_IsCancelled;
+            Painter<Black>.Paint(m_HourText, PaintMode.Normal);
 
             if (m_IsCancelled)
             {
@@ -193,7 +212,12 @@ namespace HandyTool.Components
             else
             {
                 m_HourStop.BackgroundImage = Resources.StopProcess;
+
+#if DEBUG
+                SetHourTestData();
+#else
                 ReadSavedDateTime();
+#endif
             }
 
             Settings.Default.WorkHourStopped = m_IsCancelled;
@@ -279,14 +303,7 @@ namespace HandyTool.Components
             }
             else
             {
-                //work hour exceeds 9 hours and 30 minutes
-                if (args.ElapsedTime > TimeSpan.FromMinutes(570))
-                {
-                    Painter<Red>.Paint(m_HourText, PaintMode.Normal);
-
-                    //todo: Show a popup message that work hour comes to deadline
-                }
-
+                DeadlineCheck();
                 m_HourText.Text = $@"{args.ElapsedTime.Hours:00}:" +
                                   $@"{args.ElapsedTime.Minutes:00}." +
                                   $@"{args.ElapsedTime.Seconds:00}";
@@ -295,7 +312,7 @@ namespace HandyTool.Components
 
         private void CalculateElapsedTime()
         {
-            var elapsed = DateTime.Now.Subtract(m_WorkingHours.StartTime).Subtract(m_WorkingHours.LunchBreakHour);
+            var elapsed = DateTime.Now.Subtract(m_WorkingHours.StartTimeLunchBreakIncluded);
             OnHourUpdated(elapsed);
         }
 
@@ -319,6 +336,43 @@ namespace HandyTool.Components
                 m_WorkingHours = new WorkingHours(savedDateTime);
                 BackgroundWorker.RunWorkerAsync();
             }
+        }
+
+        private void SetHourTestData()
+        {
+            var dateTime = DateTime.Now - TimeSpan.FromSeconds(614 * 60 + 58);
+
+            m_WorkingHours = new WorkingHours(dateTime);
+            BackgroundWorker.RunWorkerAsync();
+        }
+
+        private void DeadlineCheck()
+        {
+            var remainingTime = m_WorkingHours.DeadlineTime.Subtract(DateTime.Now);
+
+            if (remainingTime > m_ReminderStartLimit)
+                return;
+
+            Painter<Red>.Paint(m_HourText, PaintMode.Normal);
+
+            var ceilRemainingMinutes = Math.Ceiling(remainingTime.TotalMinutes);
+            if (ceilRemainingMinutes <= m_ReminderStartLimit.Minutes && // remaining time less than 30 minutes
+                ceilRemainingMinutes % 5 == 0 && // remain every 5 minutes
+                remainingTime.Seconds == 59) // show balloon tooltip only once
+            {
+                var tooltipIcon = ceilRemainingMinutes > 15 ? ToolTipIcon.Info : ToolTipIcon.Warning;
+                ShowBalloonTip(ceilRemainingMinutes, tooltipIcon);
+            }
+        }
+
+        private void ShowBalloonTip(double remainingTime, ToolTipIcon toolTipIcon)
+        {
+            ToolTipIcon icon = toolTipIcon;
+            string title = "Deadline Approaching";
+            string text = $"{remainingTime} minutes remain.";
+            int timeout = 2000;
+
+            BalloonTipDisplay.Show(title, text, icon, timeout);
         }
 
         #endregion

@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BalloonTipDisplay.cs" />
     <Compile Include="Commands\AutoDebugFileCreator.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ProcessKiller.cs" />
@@ -74,19 +75,16 @@
     <Compile Include="Components\Custom\ImageLabel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Custom\Popup.cs">
+    <Compile Include="Components\Custom\PopupContainer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\CurrencyPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Components\Custom\Popup.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Components\HourPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Components\CurrencySummaryPopup.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Components\HourSummaryPopup.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\TitlePanel.cs">
@@ -142,9 +140,12 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
+    <EmbeddedResource Include="user.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Settings.settings">

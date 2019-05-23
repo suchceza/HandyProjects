@@ -39,6 +39,13 @@ namespace HandyTool.Components
 
         #endregion
 
+        internal void AddSubPanels()
+        {
+            ParentControl.Controls.AddRange(CurrencyPanels);
+            ParentControl.Controls.AddRange(ToolsetPanels);
+            ParentControl.Controls.Add(WorkHourPanel);
+        }
+
         //################################################################################
         #region Protected Implementation
 
@@ -48,6 +55,7 @@ namespace HandyTool.Components
             TabIndex = 0;
             TabStop = false;
             Size = new Size(ParentControl.Width - 2, 22);
+            BackColor = Color.FromArgb(68, 68, 68);
 
             #region Currency Switch Label
 

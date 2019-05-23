@@ -34,6 +34,7 @@ namespace HandyTool
 
             s_NotifyIcon = new NotifyIcon()
             {
+                //todo:badge icon for notify icon if anything occured eg. crash, update etc.
                 Icon = Icon.FromHandle(icon.GetHicon()),
                 ContextMenu = contextMenu,
                 Visible = true
@@ -41,7 +42,21 @@ namespace HandyTool
 
             s_NotifyIcon.DoubleClick += NotifyIcon_DoubleClick;
             s_NotifyIcon.MouseMove += NotifyIcon_MouseMouse;
+
+            BalloonTipDisplay balloonTipDisplay = new BalloonTipDisplay(s_NotifyIcon);
         }
+
+        #endregion
+
+        //################################################################################
+        #region Properties
+
+        public static NotifyIcon NotifyIcon => s_NotifyIcon;
+
+        #endregion
+
+        //################################################################################
+        #region Event Handler Methods
 
         private void NotifyIcon_MouseMouse(object sender, MouseEventArgs e)
         {
@@ -64,12 +79,12 @@ namespace HandyTool
             s_NotifyIcon.Text = $@"{currencyInfos}{workHourInfo}";
         }
 
-        #endregion
-
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)
         {
             MainForm.Visible = !MainForm.Visible;
         }
+
+        #endregion
 
         //################################################################################
         #region Internal Implementation

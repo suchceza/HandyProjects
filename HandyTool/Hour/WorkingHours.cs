@@ -5,13 +5,28 @@ namespace HandyTool.Hour
     internal class WorkingHours
     {
         //################################################################################
+        #region Fields
+
+        private readonly TimeSpan m_LunchBreak = new TimeSpan(0, 45, 0);
+        private readonly TimeSpan m_BaseWorkhour = new TimeSpan(8, 0, 0);
+        private readonly TimeSpan m_AllowedOverwork = new TimeSpan(2, 0, 0);
+
+        #endregion
+
+        //################################################################################
         #region Constructor
+
+        public WorkingHours()
+        {
+            EmptyInitializer();
+        }
 
         public WorkingHours(DateTime startTime)
         {
             StartTime = startTime;
-            FinishTime = StartTime.Add(RegularWorkHour);
-            DeadlineTime = StartTime.Add(OverWorkHour);
+            StartTimeLunchBreakIncluded = StartTime.Add(m_LunchBreak);
+            FinishTime = StartTime.Add(m_BaseWorkhour).Add(m_LunchBreak);
+            DeadlineTime = FinishTime.Add(m_AllowedOverwork);
         }
 
         #endregion
@@ -19,17 +34,51 @@ namespace HandyTool.Hour
         //################################################################################
         #region Properties
 
-        public DateTime StartTime { get; }
+        internal DateTime StartTime { get; private set; }
 
-        public DateTime FinishTime { get; }
+        internal DateTime StartTimeLunchBreakIncluded { get; }
 
-        public DateTime DeadlineTime { get; }
+        internal DateTime FinishTime { get; private set; }
 
-        public TimeSpan LunchBreakHour { get; } = new TimeSpan(0, 45, 0);
+        internal DateTime DeadlineTime { get; private set; }
 
-        public TimeSpan RegularWorkHour { get; } = new TimeSpan(8, 45, 0);
+        #endregion
 
-        public TimeSpan OverWorkHour { get; } = new TimeSpan(10, 45, 0);
+        //################################################################################
+        #region Internal Implementation
+
+        internal string StartTimeString()
+        {
+            return TimeToString(StartTime);
+        }
+
+        internal string FinishTimeString()
+        {
+            return TimeToString(FinishTime);
+        }
+
+        internal string DeadlineTimeString()
+        {
+            return TimeToString(DeadlineTime);
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Private Implementation
+
+        private void EmptyInitializer()
+        {
+            var emptyDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            StartTime = emptyDateTime;
+            FinishTime = emptyDateTime;
+            DeadlineTime = emptyDateTime;
+        }
+
+        private string TimeToString(DateTime dateTime)
+        {
+            return $@"{dateTime.Hour:00}:{dateTime.Minute:00}:{dateTime.Second:00}";
+        }
 
         #endregion
     }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -39,26 +40,40 @@ namespace HandyTool.Currency
         //################################################################################
         #region Internal Implementation
 
-        public void GetRateData()
+        public void GetRateData(object sender, DoWorkEventArgs e)
         {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(ReadHtmlData());
-
-            var summaryData = ReadSummaryData(doc);
-
-            var currencySummary = new CurrencySummary
+            if (sender is BackgroundWorker worker && worker.CancellationPending)
             {
-                Actual = GetActualCurrency(doc),
-                PreviousClose = TryParseCurrencyText(summaryData["previous-close"], m_PreviousSummary.PreviousClose),
-                Open = TryParseCurrencyText(summaryData["open"], m_PreviousSummary.Open),
-                DayRangeLow = GetDayRangeLow(summaryData["day-range"]),
-                DayRangeHigh = GetDayRangeHigh(summaryData["day-range"]),
-                YearRangeLow = GetYearRangeLow(summaryData["year-range"]),
-                YearRangeHigh = GetYearRangeHigh(summaryData["year-range"])
-            };
+                e.Cancel = true;
+                return;
+            }
 
-            m_PreviousSummary = currencySummary;
-            OnCurrencyUpdated(currencySummary);
+            try
+            {
+                var doc = new HtmlDocument();
+                doc.LoadHtml(ReadHtmlData());
+
+                var summaryData = ReadSummaryData(doc);
+
+                var currencySummary = new CurrencySummary
+                {
+                    Actual = GetActualCurrency(doc),
+                    PreviousClose = TryParseCurrencyText(summaryData["previous-close"], m_PreviousSummary.PreviousClose),
+                    Open = TryParseCurrencyText(summaryData["open"], m_PreviousSummary.Open),
+                    DayRangeLow = GetDayRangeLow(summaryData["day-range"]),
+                    DayRangeHigh = GetDayRangeHigh(summaryData["day-range"]),
+                    YearRangeLow = GetYearRangeLow(summaryData["year-range"]),
+                    YearRangeHigh = GetYearRangeHigh(summaryData["year-range"])
+                };
+
+                m_PreviousSummary = currencySummary;
+                OnCurrencyUpdated(currencySummary);
+            }
+            catch (Exception)
+            {
+                e.Result = "Exception occured during currency data fetching.";
+                throw;
+            }
         }
 
         #endregion
