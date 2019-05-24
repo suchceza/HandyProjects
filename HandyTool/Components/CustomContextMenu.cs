@@ -141,7 +141,7 @@ namespace HandyTool.Components
 
         private void AppSettings(object sender, EventArgs args)
         {
-            //todo: Implement ContextMenu Settings menu
+            //todo: implement ContextMenu Settings menu
         }
 
         private void About(object sender, EventArgs args)

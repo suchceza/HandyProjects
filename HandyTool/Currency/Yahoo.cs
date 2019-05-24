@@ -50,6 +50,7 @@ namespace HandyTool.Currency
 
             try
             {
+                //todo: implement your own business logic to read html data instead of using third party APIs
                 var doc = new HtmlDocument();
                 doc.LoadHtml(ReadHtmlData());
 
@@ -71,6 +72,7 @@ namespace HandyTool.Currency
             }
             catch (Exception)
             {
+                //todo: get this result when thread ended. and put wrong data into the result object
                 e.Result = "Exception occured during currency data fetching.";
                 throw;
             }

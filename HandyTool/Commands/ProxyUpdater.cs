@@ -21,6 +21,7 @@ namespace HandyTool.Commands
 
         void ICommand.Execute()
         {
+            //todo: implement proxy updater
             throw new NotImplementedException();
         }
 

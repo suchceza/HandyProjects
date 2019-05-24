@@ -194,6 +194,8 @@ namespace HandyTool.Components
 
             #region Currency Refresh
 
+            //todo: change this logic with stop/start mechanism
+
             m_CurrencyRefresh = new ImageLabel(this, 2, "Refresh fetching of the currency rate")
             {
                 BackgroundImage = Resources.RefreshProcessDisabled,

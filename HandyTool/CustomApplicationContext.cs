@@ -34,7 +34,8 @@ namespace HandyTool
 
             s_NotifyIcon = new NotifyIcon()
             {
-                //todo:badge icon for notify icon if anything occured eg. crash, update etc.
+                //todo: badge icon for notify icon if anything occured eg. crash, update etc.
+                //todo: also show ballopn tips if any update or crash occured
                 Icon = Icon.FromHandle(icon.GetHicon()),
                 ContextMenu = contextMenu,
                 Visible = true

@@ -29,7 +29,7 @@ namespace HandyTool.Logging
 
         internal void WriteLog(LogData logData)
         {
-            //todo: Improve writing of logs to the log file
+            //todo: improve writing of logs to the log file
 
             try
             {

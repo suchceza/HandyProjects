@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace HandyTool.Components
 {
+    //todo: consider renaming of this class. it is not a tool, it is a command.
     class ToolbarPanel : CustomPanelBase
     {
         //################################################################################
@@ -43,6 +44,7 @@ namespace HandyTool.Components
         {
             ParentControl.Controls.AddRange(CurrencyPanels);
             ParentControl.Controls.AddRange(ToolsetPanels);
+            //todo: consider to put work hour panel top of the tool panels
             ParentControl.Controls.Add(WorkHourPanel);
         }
 

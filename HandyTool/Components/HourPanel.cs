@@ -15,6 +15,8 @@ namespace HandyTool.Components
 {
     internal class HourPanel : BackgroundWorkerPanel
     {
+        //todo: create a new method that manages switch on/off of the work hour thread. don't call thread run method more than one place
+
         //################################################################################
         #region Fields
 
@@ -201,6 +203,7 @@ namespace HandyTool.Components
 
         private void HourStop_Click(object sender, EventArgs e)
         {
+            //todo: don't run this method if work hour is not started.
             m_IsCancelled = !m_IsCancelled;
             Painter<Black>.Paint(m_HourText, PaintMode.Normal);
 
@@ -226,6 +229,7 @@ namespace HandyTool.Components
 
         private void HourText_DoubleClick(object sender, EventArgs e)
         {
+            //todo: hour text cannot be double clicked unless it is stopped, do isStopped check here
             m_HourText.ReadOnly = false;
             m_HourText.SelectAll();
             m_IsCancelled = true;

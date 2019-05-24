@@ -78,6 +78,8 @@ namespace HandyTool.Components
             //Style Stuff
             Painter<Black>.Paint(m_BatchCommandLabel, PaintMode.Normal);
 
+            //todo: open a context menu with different options when text label is clicked
+
             Controls.Add(m_BatchCommandLabel);
 
             #endregion
@@ -123,7 +125,7 @@ namespace HandyTool.Components
 
         private void Settings_Click(object sender, EventArgs e)
         {
-            //todo: Implement settings options of CommandPanel
+            //todo: implement settings options of CommandPanel
         }
 
         #endregion

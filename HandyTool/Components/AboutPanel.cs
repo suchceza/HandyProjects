@@ -27,6 +27,8 @@ namespace HandyTool.Components
 
         protected sealed override void InitializeComponents()
         {
+            //todo: finish about panel implementation
+
             Name = "AboutPanel";
             TabIndex = 0;
             TabStop = false;

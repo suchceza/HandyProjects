@@ -97,6 +97,8 @@ namespace HandyTool
 
         private void InitializePanels()
         {
+            // todo: consider creating group panel for currencies and tools
+
             //-- About Panel -------------------------------------------------------------
             var aboutPanel = new AboutPanel(this);
 

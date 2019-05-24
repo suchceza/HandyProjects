@@ -19,6 +19,7 @@ namespace HandyTool.Commands
 
         void ICommand.Execute()
         {
+            //todo: implement auto debug creator
             throw new NotImplementedException();
         }
 

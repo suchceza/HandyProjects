@@ -8,6 +8,8 @@ namespace HandyTool.Currency
         string Source { get; }
     }
 
+    //todo: convert them to inner classes in each currency service class. eg. move those into Yahoo.cs
+
     internal class EurTryCurrency : ICurrency
     {
         string ICurrency.Name => "EUR/TRY";

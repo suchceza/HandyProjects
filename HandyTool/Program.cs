@@ -11,6 +11,8 @@ namespace HandyTool
         [STAThread]
         static void Main()
         {
+            //todo: well structured solution folders. one folder for each functionality
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 

@@ -21,6 +21,7 @@ namespace HandyTool.Commands
 
         void ICommand.Execute()
         {
+            //todo: implement temp folder cleaner
             throw new NotImplementedException();
         }
 

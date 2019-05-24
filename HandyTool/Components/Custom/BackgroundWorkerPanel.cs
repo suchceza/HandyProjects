@@ -64,7 +64,7 @@ namespace HandyTool.Components.Custom
                 mainLogItem.AddInnerLogItem(subLogItemCancelled);
             }
 
-            //todo: Change null with log collection
+            //todo: change null with log collection
             Logger.WriteLog(mainLogItem);
         }
 
