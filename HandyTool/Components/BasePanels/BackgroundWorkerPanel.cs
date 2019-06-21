@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace HandyTool.Components.Custom
+namespace HandyTool.Components.BasePanels
 {
     internal abstract class BackgroundWorkerPanel : CustomPanelBase
     {

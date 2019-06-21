@@ -3,7 +3,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HandyTool.Components.Custom
+namespace HandyTool.Components.BasePanels
 {
     internal abstract class CustomPanelBase : Panel
     {

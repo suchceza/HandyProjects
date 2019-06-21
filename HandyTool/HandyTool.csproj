@@ -60,31 +60,31 @@
     <Compile Include="Components\AboutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\CommandPanel.cs">
+    <Compile Include="Components\WorkerPanels\CommandPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Custom\BackgroundWorkerPanel.cs">
+    <Compile Include="Components\BasePanels\BackgroundWorkerPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Custom\CustomPanelBase.cs">
+    <Compile Include="Components\BasePanels\CustomPanelBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Custom\DraggablePanel.cs">
+    <Compile Include="Components\BasePanels\DraggablePanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Custom\ImageLabel.cs">
+    <Compile Include="Components\CustomPanels\ImageLabel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Custom\PopupContainer.cs">
+    <Compile Include="Components\CustomPanels\PopupContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\CurrencyPanel.cs">
+    <Compile Include="Components\WorkerPanels\CurrencyPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Custom\Popup.cs">
+    <Compile Include="Components\CustomPanels\Popup.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\HourPanel.cs">
+    <Compile Include="Components\WorkerPanels\HourPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\TitlePanel.cs">

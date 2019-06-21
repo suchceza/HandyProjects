@@ -1,5 +1,6 @@
 ﻿using HandyTool.Commands;
 using HandyTool.Components;
+using HandyTool.Components.WorkerPanels;
 using HandyTool.Currency;
 using HandyTool.Logging;
 using HandyTool.Properties;

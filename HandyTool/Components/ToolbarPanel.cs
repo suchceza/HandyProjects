@@ -1,4 +1,5 @@
-﻿using HandyTool.Components.Custom;
+﻿using HandyTool.Components.BasePanels;
+using HandyTool.Components.CustomPanels;
 using HandyTool.Properties;
 
 using System.Drawing;

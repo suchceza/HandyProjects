@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HandyTool.Components.Custom
+namespace HandyTool.Components.CustomPanels
 {
     internal sealed class ImageLabel : Label
     {

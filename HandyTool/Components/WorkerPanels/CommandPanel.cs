@@ -1,5 +1,6 @@
 ﻿using HandyTool.Commands;
-using HandyTool.Components.Custom;
+using HandyTool.Components.BasePanels;
+using HandyTool.Components.CustomPanels;
 using HandyTool.Properties;
 using HandyTool.Style;
 using HandyTool.Style.Colors;
@@ -9,7 +10,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HandyTool.Components
+namespace HandyTool.Components.WorkerPanels
 {
     internal class CommandPanel : BackgroundWorkerPanel
     {

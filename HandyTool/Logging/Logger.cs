@@ -80,6 +80,7 @@ namespace HandyTool.Logging
         {
             using (StreamWriter writer = new StreamWriter(LogFile, true))
             {
+                //todo: 4 tabs are too much for inner exception. redesign is needed.
                 var indent = string.Concat(Enumerable.Repeat("\t", logData.Level * 4));
 
                 foreach (var line in logData.Message.Split(new[] { "\n" }, StringSplitOptions.None))

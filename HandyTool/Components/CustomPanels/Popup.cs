@@ -1,10 +1,11 @@
-﻿using HandyTool.Style;
+﻿using HandyTool.Components.BasePanels;
+using HandyTool.Style;
 
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HandyTool.Components.Custom
+namespace HandyTool.Components.CustomPanels
 {
     internal struct PopupItem
     {

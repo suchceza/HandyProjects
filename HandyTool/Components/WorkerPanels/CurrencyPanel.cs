@@ -1,4 +1,5 @@
-﻿using HandyTool.Components.Custom;
+﻿using HandyTool.Components.BasePanels;
+using HandyTool.Components.CustomPanels;
 using HandyTool.Currency;
 using HandyTool.Properties;
 using HandyTool.Style;
@@ -11,7 +12,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace HandyTool.Components
+namespace HandyTool.Components.WorkerPanels
 {
     internal class CurrencyPanel : BackgroundWorkerPanel
     {
@@ -101,7 +102,7 @@ namespace HandyTool.Components
                 while (!m_IsUpdateCancelled)
                 {
                     yahooService.GetRateData(sender, e);
-                    Thread.Sleep(500);
+                    Thread.Sleep(RefreshRate);
                 }
             }
             finally

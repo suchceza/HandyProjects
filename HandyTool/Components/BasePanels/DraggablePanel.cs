@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace HandyTool.Components.Custom
+namespace HandyTool.Components.BasePanels
 {
     internal abstract class DraggablePanel : CustomPanelBase
     {

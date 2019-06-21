@@ -1,5 +1,6 @@
-﻿using HandyTool.Components.Custom;
-
+﻿using HandyTool.Components.BasePanels;
+using HandyTool.Style;
+using HandyTool.Style.Colors;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -10,6 +11,8 @@ namespace HandyTool.Components
         //################################################################################
         #region Fields
 
+        private readonly Label m_AboutContent;
+
         #endregion
 
         //################################################################################
@@ -17,6 +20,8 @@ namespace HandyTool.Components
 
         public AboutPanel(Control parentControl) : base(parentControl)
         {
+            m_AboutContent = new Label();
+
             InitializeComponents();
         }
 
@@ -27,8 +32,6 @@ namespace HandyTool.Components
 
         protected sealed override void InitializeComponents()
         {
-            //todo: finish about panel implementation
-
             Name = "AboutPanel";
             TabIndex = 0;
             TabStop = false;
@@ -36,10 +39,34 @@ namespace HandyTool.Components
             BackColor = Color.Yellow;
             Visible = false;
             VisibleChanged += AboutPanel_VisibleChanged;
-            Click += AboutPanel_Click;
+            Click += CloseOnClick;
+
+            #region Content Label
+
+            //Text Stuff
+            m_AboutContent.Font = new Font(new FontFamily("Consolas"), 8, FontStyle.Bold);
+            m_AboutContent.Text = "HandyBox v1.2\n" +
+                                  "Coded by Halid Ali\n" +
+                                  "Copyright © 2019";
+
+            //Position/Size Stuff
+            m_AboutContent.Dock = DockStyle.Fill;
+
+            //Alignment Stuff
+            m_AboutContent.TextAlign = ContentAlignment.MiddleCenter;
+
+            //Style Stuff
+            Painter<Black>.Paint(m_AboutContent, PaintMode.Normal);
+
+            //Event Stuff
+            m_AboutContent.Click += CloseOnClick;
+
+            Controls.Add(m_AboutContent);
+
+            #endregion
         }
 
-        private void AboutPanel_Click(object sender, System.EventArgs e)
+        private void CloseOnClick(object sender, System.EventArgs e)
         {
             Visible = false;
         }
