@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 
-namespace HandyTool.Currency
+namespace HandyTool.Currency.Services
 {
     internal class Yahoo
     {
@@ -15,7 +15,7 @@ namespace HandyTool.Currency
         #region Fields
 
         private readonly string m_CurrencySourceUrl;
-        private CurrencySummary m_PreviousSummary;
+        private CurrencySummaryData m_PreviousSummary;
 
         #endregion
 
@@ -32,7 +32,7 @@ namespace HandyTool.Currency
         public Yahoo(string currencySourceUrl)
         {
             m_CurrencySourceUrl = currencySourceUrl;
-            m_PreviousSummary = new CurrencySummary();
+            m_PreviousSummary = new CurrencySummaryData();
         }
 
         #endregion
@@ -56,7 +56,7 @@ namespace HandyTool.Currency
 
                 var summaryData = ReadSummaryData(doc);
 
-                var currencySummary = new CurrencySummary
+                var currencySummary = new CurrencySummaryData
                 {
                     Actual = GetActualCurrency(doc),
                     PreviousClose = TryParseCurrencyText(summaryData["previous-close"], m_PreviousSummary.PreviousClose),
@@ -83,7 +83,7 @@ namespace HandyTool.Currency
         //################################################################################
         #region Event Callbacks
 
-        internal virtual void OnCurrencyUpdated(CurrencySummary currencySummary)
+        internal virtual void OnCurrencyUpdated(CurrencySummaryData currencySummary)
         {
             if (CurrencyUpdated != null)
             {
@@ -227,6 +227,43 @@ namespace HandyTool.Currency
 
             return actualCurrency;
         }
+
+        #endregion
+
+        //################################################################################
+        #region Currency Service Types
+
+        private struct EurTryCurrency : ICurrency
+        {
+            string ICurrency.Name => "EUR/TRY";
+
+            string ICurrency.Source => "https://finance.yahoo.com/quote/EURTRY%3DX?p=EURTRY%3DX";
+        }
+
+        private struct EurUsdCurrency : ICurrency
+        {
+            string ICurrency.Name => "EUR/USD";
+
+            string ICurrency.Source => "https://finance.yahoo.com/quote/EURUSD%3DX?p=EURUSD%3DX";
+        }
+
+        private struct UsdTryCurrency : ICurrency
+        {
+            string ICurrency.Name => "USD/TRY";
+
+            string ICurrency.Source => "https://finance.yahoo.com/quote/USDTRY%3DX?p=USDTRY%3DX";
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Currency Service Properties
+
+        internal static ICurrency EurTry => new EurTryCurrency();
+
+        internal static ICurrency EurUsd => new EurUsdCurrency();
+
+        internal static ICurrency UsdTry => new UsdTryCurrency();
 
         #endregion
     }

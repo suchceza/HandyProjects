@@ -50,11 +50,11 @@ namespace HandyTool
             this.BackColor = System.Drawing.Color.Black;
             this.Size = new System.Drawing.Size(185, 318);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Handy Box v1.0 by Halit Yurtsever";
             this.TopMost = Settings.Default.AlwaysOnTop;
             this.ShowInTaskbar = false;

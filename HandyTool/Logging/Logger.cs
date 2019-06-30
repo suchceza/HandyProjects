@@ -10,7 +10,12 @@ namespace HandyTool.Logging
         //################################################################################
         #region Fields
 
+#if DEBUG
+        private readonly string m_LogFileName = "handy-box-logs-debug.log";
+#else
         private readonly string m_LogFileName = "handy-box-logs.log";
+#endif
+
         private string m_NotepadPath = @"C:\Windows\notepad.exe";
 
         #endregion

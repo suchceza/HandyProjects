@@ -5,6 +5,6 @@ namespace HandyTool.Currency
 
     internal class CurrencyUpdatedEventArgs
     {
-        internal CurrencySummary CurrencySummary { get; set; }
+        internal CurrencySummaryData CurrencySummary { get; set; }
     }
 }

@@ -16,16 +16,14 @@ namespace HandyTool.Components.WorkerPanels
 {
     internal class HourPanel : BackgroundWorkerPanel
     {
-        //todo: create a new method that manages switch on/off of the work hour thread. don't call thread run method more than one place
-
         //################################################################################
         #region Fields
 
-        private TimeSpan m_ReminderStartLimit = new TimeSpan(0, 30, 0);
+        private readonly TimeSpan m_ReminderStartLimit = new TimeSpan(0, 30, 0);
 
         private readonly TextBox m_HourText;
         private ImageLabel m_HourDetails;
-        private ImageLabel m_HourStop;
+        private ImageLabel m_HourStartStop;
 
         private WorkingHours m_WorkingHours;
         private bool m_IsCancelled;
@@ -59,7 +57,7 @@ namespace HandyTool.Components.WorkerPanels
             m_Popup = new PopupContainer(m_SummaryPopup);
             Paint += PaintBorder;
 
-            ReadSavedDateTime();
+            SwitchHourStartStop(isInitialization: true);
         }
 
         #endregion
@@ -83,8 +81,6 @@ namespace HandyTool.Components.WorkerPanels
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            m_HourStop.BackgroundImage = Resources.StopProcess;
-
             HourUpdated += UpdateHour;
 
             while (!m_IsCancelled)
@@ -98,14 +94,13 @@ namespace HandyTool.Components.WorkerPanels
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            m_HourStop.BackgroundImage = Resources.RunProcess;
-            m_IsCancelled = true;
+            StopHour();
             WriteLogsIfHappened(e.Error, "WorkHour", e.Cancelled);
         }
 
         protected sealed override void InitializeComponents()
         {
-            Name = $@"WorkHourPanel";
+            Name = @"WorkHourPanel";
             TabIndex = 0;
             TabStop = false;
             Size = new Size(ParentControl.Width - 2, 22);
@@ -153,17 +148,17 @@ namespace HandyTool.Components.WorkerPanels
 
             #endregion
 
-            #region Hour Stop
+            #region Hour Start/Stop
 
-            m_HourStop = new ImageLabel(this, 2, "Start/Stop hour counting")
+            m_HourStartStop = new ImageLabel(this, 2, "Start/Stop hour counting")
             {
                 BackgroundImage = Settings.Default.WorkHourStopped ? Resources.RunProcess : Resources.StopProcess
             };
 
             //Event Stuff
-            m_HourStop.Click += HourStop_Click;
+            m_HourStartStop.Click += HourStartStop_Click;
 
-            Controls.Add(m_HourStop);
+            Controls.Add(m_HourStartStop);
 
             #endregion
         }
@@ -202,30 +197,10 @@ namespace HandyTool.Components.WorkerPanels
             }
         }
 
-        private void HourStop_Click(object sender, EventArgs e)
+        private void HourStartStop_Click(object sender, EventArgs e)
         {
-            //todo: don't run this method if work hour is not started.
-            m_IsCancelled = !m_IsCancelled;
             Painter<Black>.Paint(m_HourText, PaintMode.Normal);
-
-            if (m_IsCancelled)
-            {
-                m_HourStop.BackgroundImage = Resources.RunProcess;
-                m_HourText.Text = @"N/A";
-            }
-            else
-            {
-                m_HourStop.BackgroundImage = Resources.StopProcess;
-
-#if DEBUG
-                SetHourTestData();
-#else
-                ReadSavedDateTime();
-#endif
-            }
-
-            Settings.Default.WorkHourStopped = m_IsCancelled;
-            Settings.Default.Save();
+            SwitchHourStartStop(isInitialization: false);
         }
 
         private void HourText_DoubleClick(object sender, EventArgs e)
@@ -255,8 +230,7 @@ namespace HandyTool.Components.WorkerPanels
                 Settings.Default.Second = parsedTime.Second;
                 Settings.Default.Save();
 
-                m_IsCancelled = false;
-                BackgroundWorker.RunWorkerAsync();
+                StartHour();
             }
         }
 
@@ -279,6 +253,59 @@ namespace HandyTool.Components.WorkerPanels
 
         //################################################################################
         #region Private Implementation
+
+        private void SwitchHourStartStop(bool isInitialization)
+        {
+            if (Settings.Default.WorkHourStopped ^ isInitialization)
+            {
+#if DEBUG
+                StartTestHour();
+#else
+                StartHour();
+#endif
+            }
+            else
+            {
+                StopHour();
+            }
+        }
+
+        private void StartTestHour()
+        {
+            var dateTime = DateTime.Now - TimeSpan.FromSeconds(614 * 60 + 58);
+            m_WorkingHours = new WorkingHours(dateTime);
+
+            m_HourStartStop.BackgroundImage = Resources.StopProcess;
+            m_IsCancelled = false;
+
+            Settings.Default.WorkHourStopped = m_IsCancelled;
+            Settings.Default.Save();
+
+            BackgroundWorker.RunWorkerAsync();
+        }
+
+        private void StartHour()
+        {
+            m_HourStartStop.BackgroundImage = Resources.StopProcess;
+            m_IsCancelled = false;
+
+            Settings.Default.WorkHourStopped = m_IsCancelled;
+            Settings.Default.Save();
+
+            ReadSavedDateTime();
+            BackgroundWorker.RunWorkerAsync();
+        }
+
+        private void StopHour()
+        {
+            m_HourStartStop.BackgroundImage = Resources.RunProcess;
+            m_IsCancelled = true;
+
+            m_HourText.Text = @"N/A";
+
+            Settings.Default.WorkHourStopped = m_IsCancelled;
+            Settings.Default.Save();
+        }
 
         private DateTime TryParseClock(string value)
         {
@@ -339,16 +366,7 @@ namespace HandyTool.Components.WorkerPanels
                 !m_IsCancelled)
             {
                 m_WorkingHours = new WorkingHours(savedDateTime);
-                BackgroundWorker.RunWorkerAsync();
             }
-        }
-
-        private void SetHourTestData()
-        {
-            var dateTime = DateTime.Now - TimeSpan.FromSeconds(614 * 60 + 58);
-
-            m_WorkingHours = new WorkingHours(dateTime);
-            BackgroundWorker.RunWorkerAsync();
         }
 
         private void DeadlineCheck()

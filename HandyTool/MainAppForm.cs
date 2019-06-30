@@ -2,6 +2,7 @@
 using HandyTool.Components;
 using HandyTool.Components.WorkerPanels;
 using HandyTool.Currency;
+using HandyTool.Currency.Services;
 using HandyTool.Logging;
 using HandyTool.Properties;
 
@@ -107,8 +108,8 @@ namespace HandyTool
             var titlePanel = new TitlePanel(this);
 
             //-- Currency Panels ---------------------------------------------------------
-            var eurTryPanel = new CurrencyPanel(new EurTryCurrency(), this);
-            var eurUsdPanel = new CurrencyPanel(new EurUsdCurrency(), this, 5000);
+            var eurTryPanel = new CurrencyPanel(Yahoo.EurTry, this);
+            var eurUsdPanel = new CurrencyPanel(Yahoo.EurUsd, this, 5000);
 
             //-- Process Panels ----------------------------------------------------------
             var processKillPanel = new CommandPanel(new ProcessKiller(), this, "Kill TIA Processes");
@@ -118,18 +119,20 @@ namespace HandyTool
             var hourPanel = new HourPanel(this);
 
             //-- Toolbar Panel -----------------------------------------------------------
-            var toolbarPanel = new ToolbarPanel(this);
-            toolbarPanel.CurrencyPanels = new Panel[]
+            var toolbarPanel = new ToolbarPanel(this)
             {
-                eurTryPanel,
-                eurUsdPanel
+                CurrencyPanels = new Panel[]
+                {
+                    eurTryPanel,
+                    eurUsdPanel
+                },
+                ToolsetPanels = new Panel[]
+                {
+                    processKillPanel,
+                    autoDebugPanel
+                },
+                WorkHourPanel = hourPanel
             };
-            toolbarPanel.ToolsetPanels = new Panel[]
-            {
-                processKillPanel,
-                autoDebugPanel
-            };
-            toolbarPanel.WorkHourPanel = hourPanel;
 
             //-- Add Panels in order -----------------------------------------------------
             Controls.Add(aboutPanel);
@@ -142,7 +145,7 @@ namespace HandyTool
 
         private void SetFormPosition()
         {
-            //StartPosition = FormStartPosition.CenterScreen;
+#if DEBUG == false
             var marginRight = 30;
             var marginBottom = 60;
             var screenW = Screen.PrimaryScreen.Bounds.Width;
@@ -150,6 +153,7 @@ namespace HandyTool
 
             Top = screenH - Height - marginBottom;
             Left = screenW - Width - marginRight;
+#endif
         }
 
         #endregion

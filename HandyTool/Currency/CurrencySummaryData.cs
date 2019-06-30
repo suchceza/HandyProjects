@@ -1,7 +1,7 @@
 ﻿
 namespace HandyTool.Currency
 {
-    internal struct CurrencySummary
+    internal struct CurrencySummaryData
     {
         public double Actual { get; set; }
 

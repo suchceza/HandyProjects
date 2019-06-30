@@ -69,6 +69,7 @@ namespace HandyTool
             {
                 if (panel is CurrencyPanel)
                 {
+                    //todo: display N/A if currency fetch results not available
                     currencyInfos += $"{((CurrencyPanel)panel).CurrencyName}: {((CurrencyPanel)panel).CurrentRateValue}\n";
                 }
 

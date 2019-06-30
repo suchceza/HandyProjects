@@ -1,6 +1,7 @@
 ﻿using HandyTool.Components.BasePanels;
 using HandyTool.Components.CustomPanels;
 using HandyTool.Currency;
+using HandyTool.Currency.Services;
 using HandyTool.Properties;
 using HandyTool.Style;
 using HandyTool.Style.Colors;
@@ -22,7 +23,7 @@ namespace HandyTool.Components.WorkerPanels
         private const int c_SpaceBetween = 1;
         private const int c_PaddingMargin = 2;
 
-        private CurrencySummary m_PreviousValues;
+        private CurrencySummaryData m_PreviousValues;
         private bool m_IsUpdateCancelled;
 
         private readonly ICurrency m_Currency;
@@ -225,7 +226,7 @@ namespace HandyTool.Components.WorkerPanels
             }
             else
             {
-                CurrencySummary currencySummary = args.CurrencySummary;
+                CurrencySummaryData currencySummary = args.CurrencySummary;
 
                 if (currencySummary.Actual > m_PreviousValues.Actual)
                 {
