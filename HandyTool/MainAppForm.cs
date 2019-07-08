@@ -112,6 +112,7 @@ namespace HandyTool
             var eurUsdPanel = new CurrencyPanel(Yahoo.EurUsd, this, 5000);
 
             //-- Process Panels ----------------------------------------------------------
+            var processSelectorPanel = new CommandPanel(new ProcessStarter(), this, "Start Process");
             var processKillPanel = new CommandPanel(new ProcessKiller(), this, "Kill TIA Processes");
             var autoDebugPanel = new CommandPanel(new AutoDebugFileCreator(), this, "AutoDebug File Create");
 
@@ -128,6 +129,7 @@ namespace HandyTool
                 },
                 ToolsetPanels = new Panel[]
                 {
+                    processSelectorPanel,
                     processKillPanel,
                     autoDebugPanel
                 },

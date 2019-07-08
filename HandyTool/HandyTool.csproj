@@ -70,9 +70,13 @@
     <Compile Include="Commands\AutoDebugFileCreator.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ProcessKiller.cs" />
+    <Compile Include="Commands\ProcessStarter.cs" />
     <Compile Include="Commands\ProxyUpdater.cs" />
     <Compile Include="Commands\TempFolderCleaner.cs" />
     <Compile Include="Components\AboutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\CustomPanels\ProcessStarterPopup.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\WorkerPanels\CommandPanel.cs">
@@ -96,7 +100,7 @@
     <Compile Include="Components\WorkerPanels\CurrencyPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\CustomPanels\Popup.cs">
+    <Compile Include="Components\CustomPanels\InfoPopup.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\WorkerPanels\HourPanel.cs">

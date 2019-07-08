@@ -29,7 +29,7 @@ namespace HandyTool.Components.WorkerPanels
         private bool m_IsCancelled;
 
         private readonly PopupContainer m_Popup;
-        private readonly Popup<Blue> m_SummaryPopup;
+        private readonly InfoPopup<Blue> m_SummaryPopup;
 
         #endregion
 
@@ -44,7 +44,7 @@ namespace HandyTool.Components.WorkerPanels
 
             InitializeComponents();
 
-            m_SummaryPopup = new Popup<Blue>
+            m_SummaryPopup = new InfoPopup<Blue>
             (
                 new List<PopupItem>
                 {
@@ -66,6 +66,13 @@ namespace HandyTool.Components.WorkerPanels
         #region Properties
 
         public string ElapsedTime => m_HourText.Text;
+
+        private DateTime SavedDateTime => new DateTime(Settings.Default.Year,
+                                                       Settings.Default.Month,
+                                                       Settings.Default.Day,
+                                                       Settings.Default.Hour,
+                                                       Settings.Default.Minute,
+                                                       Settings.Default.Second);
 
         #endregion
 
@@ -152,7 +159,7 @@ namespace HandyTool.Components.WorkerPanels
 
             m_HourStartStop = new ImageLabel(this, 2, "Start/Stop hour counting")
             {
-                BackgroundImage = Settings.Default.WorkHourStopped ? Resources.RunProcess : Resources.StopProcess
+                BackgroundImage = Resources.RunProcess
             };
 
             //Event Stuff
@@ -200,7 +207,7 @@ namespace HandyTool.Components.WorkerPanels
         private void HourStartStop_Click(object sender, EventArgs e)
         {
             Painter<Black>.Paint(m_HourText, PaintMode.Normal);
-            SwitchHourStartStop(isInitialization: false);
+            SwitchHourStartStop();
         }
 
         private void HourText_DoubleClick(object sender, EventArgs e)
@@ -254,9 +261,27 @@ namespace HandyTool.Components.WorkerPanels
         //################################################################################
         #region Private Implementation
 
-        private void SwitchHourStartStop(bool isInitialization)
+        private void SwitchHourStartStop(bool isInitialization = false)
         {
-            if (Settings.Default.WorkHourStopped ^ isInitialization)
+            if (isInitialization && !IsPresentDay())
+            {
+                return;
+            }
+
+            var isStopped = Settings.Default.WorkHourStopped;
+
+            if (isInitialization && IsPresentDay() && isStopped)
+            {
+                return;
+            }
+
+            if (!IsPresentDay())
+            {
+                ShowBalloonTip("Hour isn't set", "Please set the hour before start.", ToolTipIcon.Warning);
+                return;
+            }
+
+            if (isInitialization ^ isStopped)
             {
 #if DEBUG
                 StartTestHour();
@@ -350,23 +375,17 @@ namespace HandyTool.Components.WorkerPanels
 
         private void ReadSavedDateTime()
         {
-            var savedDateTime = new DateTime
-            (
-                Settings.Default.Year,
-                Settings.Default.Month,
-                Settings.Default.Day,
-                Settings.Default.Hour,
-                Settings.Default.Minute,
-                Settings.Default.Second
-            );
-
-            if (DateTime.Now.Year == savedDateTime.Year &&
-                DateTime.Now.Month == savedDateTime.Month &&
-                DateTime.Now.Day == savedDateTime.Day &&
-                !m_IsCancelled)
+            if (IsPresentDay() && !m_IsCancelled)
             {
-                m_WorkingHours = new WorkingHours(savedDateTime);
+                m_WorkingHours = new WorkingHours(SavedDateTime);
             }
+        }
+
+        private bool IsPresentDay()
+        {
+            return DateTime.Now.Year == SavedDateTime.Year &&
+                   DateTime.Now.Month == SavedDateTime.Month &&
+                   DateTime.Now.Day == SavedDateTime.Day;
         }
 
         private void DeadlineCheck()
@@ -384,18 +403,16 @@ namespace HandyTool.Components.WorkerPanels
                 remainingTime.Seconds == 59) // show balloon tooltip only once
             {
                 var tooltipIcon = ceilRemainingMinutes > 15 ? ToolTipIcon.Info : ToolTipIcon.Warning;
-                ShowBalloonTip(ceilRemainingMinutes, tooltipIcon);
+                ShowBalloonTip("Deadline Approaching", $"{ceilRemainingMinutes} minutes remain.", tooltipIcon);
             }
         }
 
-        private void ShowBalloonTip(double remainingTime, ToolTipIcon toolTipIcon)
+        private void ShowBalloonTip(string title, string message, ToolTipIcon toolTipIcon)
         {
             ToolTipIcon icon = toolTipIcon;
-            string title = "Deadline Approaching";
-            string text = $"{remainingTime} minutes remain.";
             int timeout = 2000;
 
-            BalloonTipDisplay.Show(title, text, icon, timeout);
+            BalloonTipDisplay.Show(title, message, icon, timeout);
         }
 
         #endregion

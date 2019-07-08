@@ -188,29 +188,38 @@ namespace HandyTool.Currency.Services
 
         private double GetDayRangeLow(string currencyText)
         {
-            var dayRangeLow = currencyText.Split('-')[0].Trim();
-            return TryParseCurrencyText(dayRangeLow, m_PreviousSummary.DayRangeLow);
+            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: false), m_PreviousSummary.DayRangeLow);
         }
 
         private double GetDayRangeHigh(string currencyText)
         {
-            var dayRangeHigh = currencyText.Split('-')[1].Trim();
-            return TryParseCurrencyText(dayRangeHigh, m_PreviousSummary.DayRangeHigh);
+            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: true), m_PreviousSummary.DayRangeHigh);
         }
 
         private double GetYearRangeLow(string currencyText)
         {
-            var yearRangeLow = currencyText.Split('-')[0].Trim();
-            return TryParseCurrencyText(yearRangeLow, m_PreviousSummary.YearRangeLow);
+            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: false), m_PreviousSummary.YearRangeLow);
         }
 
         private double GetYearRangeHigh(string currencyText)
         {
-            var yearRangeHigh = currencyText.Split('-')[1].Trim();
-            return TryParseCurrencyText(yearRangeHigh, m_PreviousSummary.YearRangeHigh);
+            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: true), m_PreviousSummary.YearRangeHigh);
         }
 
         #endregion
+
+        private string TrySplitCurrencyText(string currencyText, bool isHigh)
+        {
+            try
+            {
+                var index = isHigh ? 1 : 0;
+                return currencyText.Split('-')[index].Trim();
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
 
         private double TryParseCurrencyText(string currencyText, double previousValue)
         {

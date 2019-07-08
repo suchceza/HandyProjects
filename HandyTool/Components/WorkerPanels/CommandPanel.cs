@@ -46,7 +46,7 @@ namespace HandyTool.Components.WorkerPanels
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            m_Command.Execute();
+            
         }
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -121,7 +121,8 @@ namespace HandyTool.Components.WorkerPanels
 
         private void RunProcess_Click(object sender, EventArgs e)
         {
-            BackgroundWorker.RunWorkerAsync();
+            m_Command.Execute();
+            //BackgroundWorker.RunWorkerAsync();
         }
 
         private void Settings_Click(object sender, EventArgs e)

@@ -16,7 +16,7 @@ namespace HandyTool.Components.CustomPanels
         public PaintMode Style { get; set; }
     }
 
-    internal sealed class Popup<T> : DraggablePanel where T : ColorBase, new()
+    internal sealed class InfoPopup<T> : DraggablePanel where T : ColorBase, new()
     {
         //################################################################################
         #region Fields
@@ -33,7 +33,7 @@ namespace HandyTool.Components.CustomPanels
         //################################################################################
         #region Constructor
 
-        public Popup(List<PopupItem> items) : base(null)
+        public InfoPopup(List<PopupItem> items) : base(null)
         {
             m_PopupItems = items;
             InitializeComponents();

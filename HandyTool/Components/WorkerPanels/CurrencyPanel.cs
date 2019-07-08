@@ -31,10 +31,10 @@ namespace HandyTool.Components.WorkerPanels
         private readonly Label m_CurrencyLabel;
         private readonly Label m_CurrencyValue;
         private ImageLabel m_CurrencySummary;
-        private ImageLabel m_CurrencyRefresh;
+        private ImageLabel m_CurrencyStartStop;
 
         private readonly PopupContainer m_Popup;
-        private readonly Popup<Blue> m_SummaryPopup;
+        private readonly InfoPopup<Blue> m_SummaryPopup;
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace HandyTool.Components.WorkerPanels
 
             InitializeComponents();
 
-            m_SummaryPopup = new Popup<Blue>
+            m_SummaryPopup = new InfoPopup<Blue>
             (
                 new List<PopupItem>
                 {
@@ -73,7 +73,7 @@ namespace HandyTool.Components.WorkerPanels
             m_Popup = new PopupContainer(m_SummaryPopup);
             Paint += PaintBorder;
 
-            BackgroundWorker.RunWorkerAsync();
+            Start();
         }
 
         #endregion
@@ -115,11 +115,7 @@ namespace HandyTool.Components.WorkerPanels
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //if any error occurs and thread is killed
-            m_IsUpdateCancelled = true;
-            Painter<Black>.Paint(m_CurrencyValue, PaintMode.Normal);
-            m_CurrencyValue.Text = @"N/A";
-            m_CurrencyRefresh.Enabled = true;
-            m_CurrencyRefresh.BackgroundImage = Resources.RefreshProcessEnabled;
+            Stop();
 
             WriteLogsIfHappened(e.Error, $"Currency[{m_Currency.Name}]", e.Cancelled);
         }
@@ -196,18 +192,15 @@ namespace HandyTool.Components.WorkerPanels
 
             #region Currency Refresh
 
-            //todo: change this logic with stop/start mechanism
-
-            m_CurrencyRefresh = new ImageLabel(this, 2, "Refresh fetching of the currency rate")
+            m_CurrencyStartStop = new ImageLabel(this, 2, "Refresh fetching of the currency rate")
             {
-                BackgroundImage = Resources.RefreshProcessDisabled,
-                Enabled = false
+                BackgroundImage = Resources.StopProcess
             };
 
             //Event Stuff
-            m_CurrencyRefresh.Click += CurrencyRefresh_Click;
+            m_CurrencyStartStop.Click += CurrencyRefresh_Click;
 
-            Controls.Add(m_CurrencyRefresh);
+            Controls.Add(m_CurrencyStartStop);
 
             #endregion
         }
@@ -216,6 +209,21 @@ namespace HandyTool.Components.WorkerPanels
 
         //################################################################################
         #region Private Implementation
+
+        private void Start()
+        {
+            m_CurrencyStartStop.BackgroundImage = Resources.StopProcess;
+            m_IsUpdateCancelled = false;
+            BackgroundWorker.RunWorkerAsync();
+        }
+
+        private void Stop()
+        {
+            m_CurrencyStartStop.BackgroundImage = Resources.RunProcess;
+            m_IsUpdateCancelled = true;
+            Painter<Black>.Paint(m_CurrencyValue, PaintMode.Normal);
+            m_CurrencyValue.Text = @"N/A";
+        }
 
         private void UpdateCurrency(CurrencyUpdatedEventArgs args)
         {
@@ -281,10 +289,14 @@ namespace HandyTool.Components.WorkerPanels
 
         private void CurrencyRefresh_Click(object sender, EventArgs e)
         {
-            m_IsUpdateCancelled = false;
-            m_CurrencyRefresh.Enabled = false;
-            m_CurrencyRefresh.BackgroundImage = Resources.RefreshProcessDisabled;
-            BackgroundWorker.RunWorkerAsync();
+            if (m_IsUpdateCancelled)
+            {
+                Start();
+            }
+            else
+            {
+                Stop();
+            }
         }
 
         #endregion
