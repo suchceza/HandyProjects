@@ -1,4 +1,6 @@
-﻿namespace HandyTool.Stock
+﻿using HandyTool.Stock.StockInfo;
+
+namespace HandyTool.Stock
 {
     public class StockUpdateEventArgs
     {

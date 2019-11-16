@@ -1,4 +1,6 @@
-﻿using HtmlAgilityPack;
+﻿using HandyTool.Stock.StockInfo;
+
+using HtmlAgilityPack;
 
 using System;
 using System.IO;

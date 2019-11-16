@@ -1,4 +1,5 @@
-﻿using HandyTool.Stock.Tests.Dummies;
+﻿using HandyTool.Stock.StockInfo;
+using HandyTool.Stock.Tests.Dummies;
 
 using NUnit.Framework;
 

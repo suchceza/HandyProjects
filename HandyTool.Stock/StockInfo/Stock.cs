@@ -1,4 +1,4 @@
-﻿namespace HandyTool.Stock
+﻿namespace HandyTool.Stock.StockInfo
 {
     internal class Stock : IStock
     {
@@ -22,12 +22,5 @@
         string IStock.Tag => m_Tag;
 
         string IStock.SourceUrl => m_Url;
-    }
-
-    public struct StockData
-    {
-        public double ActualData { get; set; }
-
-        public double ChangeRate { get; set; }
     }
 }

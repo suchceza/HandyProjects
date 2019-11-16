@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HandyTool.Stock.StockInfo;
+
+using System;
 using System.Threading;
 
 namespace HandyTool.Stock.Tests.Dummies
