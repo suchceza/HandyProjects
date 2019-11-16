@@ -74,7 +74,7 @@ namespace HandyTool.Stock.Tests.Unit
             StockData stockData = new StockData();
 
             var stockList = new StockInfoLoader().GetStockList();
-            var yahooStock = StockServiceFactory.CreateService(StockService.Yahoo);
+            var yahooStock = StockServiceFactory.CreateService(StockServiceType.Yahoo);
 
             //act
 

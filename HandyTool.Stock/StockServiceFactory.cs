@@ -6,27 +6,31 @@ namespace HandyTool.Stock
 {
     public class StockServiceFactory
     {
+        //################################################################################
+        #region Constructor
+
         private StockServiceFactory() { }
 
-        public static IStockService CreateService(StockService service)
+        #endregion
+
+        //################################################################################
+        #region Public Static Members
+
+        public static IStockService CreateService(StockServiceType serviceType)
         {
-            switch (service)
+            switch (serviceType)
             {
-                case StockService.Yahoo:
+                case StockServiceType.Yahoo:
                     return new Yahoo();
 
-                case StockService.Garanti:
+                case StockServiceType.Garanti:
                     throw new NotImplementedException();
 
                 default:
-                    throw new ArgumentException("Invalid stock service argument.");
+                    throw new ArgumentException("Invalid stock serviceType argument.");
             }
         }
-    }
 
-    public enum StockService
-    {
-        Yahoo,
-        Garanti
+        #endregion
     }
 }

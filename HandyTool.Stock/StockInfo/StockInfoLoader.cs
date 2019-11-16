@@ -6,7 +6,15 @@ namespace HandyTool.Stock.StockInfo
 {
     public class StockInfoLoader
     {
+        //################################################################################
+        #region Fields
+
         private IList<IStock> m_StockList;
+
+        #endregion
+
+        //################################################################################
+        #region Public Members
 
         public IEnumerable<IStock> GetStockList()
         {
@@ -18,6 +26,11 @@ namespace HandyTool.Stock.StockInfo
 
             return m_StockList;
         }
+
+        #endregion
+
+        //################################################################################
+        #region Private Members
 
         private void LoadStocks()
         {
@@ -60,5 +73,7 @@ namespace HandyTool.Stock.StockInfo
                 }
             }
         }
+
+        #endregion
     }
 }

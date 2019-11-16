@@ -11,6 +11,9 @@ namespace HandyTool.Stock.StockServices
 {
     internal abstract class StockServiceBase
     {
+        //################################################################################
+        #region Protected Members
+
         protected event EventHandler<StockUpdateEventArgs> StockUpdate;
 
         protected void OnStockUpdate(StockData stockData)
@@ -51,5 +54,7 @@ namespace HandyTool.Stock.StockServices
 
             return html;
         }
+
+        #endregion
     }
 }

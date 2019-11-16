@@ -8,7 +8,15 @@ namespace HandyTool.Stock.StockServices
 {
     internal class Yahoo : StockServiceBase, IStockService
     {
+        //################################################################################
+        #region Fields
+
         private StockData PreviousStockData { get; set; }
+
+        #endregion
+
+        //################################################################################
+        #region IStockService Members
 
         event EventHandler<StockUpdateEventArgs> IStockService.StockUpdated
         {
@@ -31,6 +39,11 @@ namespace HandyTool.Stock.StockServices
             PreviousStockData = stockData;
             OnStockUpdate(stockData);
         }
+
+        #endregion
+
+        //################################################################################
+        #region Private Members
 
         private double GetActualData(HtmlDocument document)
         {
@@ -60,12 +73,12 @@ namespace HandyTool.Stock.StockServices
             return TryParseCurrencyText(currencyText, PreviousStockData.ActualData);
         }
 
-        private double GetChangeRate(HtmlDocument document)
+        private static double GetChangeRate(HtmlDocument document)
         {
             return 0;
         }
 
-        private double TryParseCurrencyText(string currencyText, double previousValue)
+        private static double TryParseCurrencyText(string currencyText, double previousValue)
         {
             double actualCurrency;
 
@@ -80,5 +93,7 @@ namespace HandyTool.Stock.StockServices
 
             return actualCurrency;
         }
+
+        #endregion
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="StockServiceFactory.cs" />
     <Compile Include="StockServices\StockServiceBase.cs" />
     <Compile Include="StockServices\Yahoo.cs" />
+    <Compile Include="StockServiceType.cs" />
     <Compile Include="StockUpdateEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
