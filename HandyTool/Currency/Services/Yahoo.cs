@@ -246,6 +246,8 @@ namespace HandyTool.Currency.Services
         {
             string ICurrency.Name => "EUR/TRY";
 
+            string ICurrency.Tag => "EURTRY";
+
             string ICurrency.Source => "https://finance.yahoo.com/quote/EURTRY%3DX?p=EURTRY%3DX";
         }
 
@@ -253,12 +255,16 @@ namespace HandyTool.Currency.Services
         {
             string ICurrency.Name => "EUR/USD";
 
+            string ICurrency.Tag => "EURUSD";
+
             string ICurrency.Source => "https://finance.yahoo.com/quote/EURUSD%3DX?p=EURUSD%3DX";
         }
 
         private struct UsdTryCurrency : ICurrency
         {
             string ICurrency.Name => "USD/TRY";
+
+            string ICurrency.Tag => "USDTRY";
 
             string ICurrency.Source => "https://finance.yahoo.com/quote/USDTRY%3DX?p=USDTRY%3DX";
         }

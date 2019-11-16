@@ -1,5 +1,6 @@
 ﻿using HandyTool.Components.BasePanels;
 using HandyTool.Components.CustomPanels;
+using HandyTool.Components.Popups;
 using HandyTool.Currency;
 using HandyTool.Currency.Services;
 using HandyTool.Properties;
@@ -30,8 +31,8 @@ namespace HandyTool.Components.WorkerPanels
 
         private readonly Label m_CurrencyLabel;
         private readonly Label m_CurrencyValue;
-        private ImageLabel m_CurrencySummary;
-        private ImageLabel m_CurrencyStartStop;
+        private ImageButton m_CurrencySummary;
+        private ImageButton m_CurrencyStartStop;
 
         private readonly PopupContainer m_Popup;
         private readonly InfoPopup<Blue> m_SummaryPopup;
@@ -85,7 +86,7 @@ namespace HandyTool.Components.WorkerPanels
 
         public string CurrencyName => m_Currency.Name;
 
-        public string CurrentRateValue => $"{m_PreviousValues.Actual:F4}";
+        public string CurrentRateValue => !m_IsUpdateCancelled ? $"{m_PreviousValues.Actual:F4}" : "N/A";
 
         #endregion
 
@@ -123,9 +124,10 @@ namespace HandyTool.Components.WorkerPanels
         protected sealed override void InitializeComponents()
         {
             Name = $@"CurrencyPanel_{m_Currency.Name}";
+            Tag = m_Currency.Tag;
             TabIndex = 0;
             TabStop = false;
-            Size = new Size(ParentControl.Width - 2, 22);
+            Size = new Size(185 - 2, 22);
             Visible = Settings.Default.CurrencySwitch;
 
             #region Currency Label
@@ -178,7 +180,7 @@ namespace HandyTool.Components.WorkerPanels
 
             #region Currency Summary
 
-            m_CurrencySummary = new ImageLabel(this, 2, "Display summary of the currency rate")
+            m_CurrencySummary = new ImageButton(this, "Display summary of the currency rate")
             {
                 BackgroundImage = Resources.SummaryCurrency
             };
@@ -192,7 +194,7 @@ namespace HandyTool.Components.WorkerPanels
 
             #region Currency Refresh
 
-            m_CurrencyStartStop = new ImageLabel(this, 2, "Refresh fetching of the currency rate")
+            m_CurrencyStartStop = new ImageButton(this, "Refresh fetching of the currency rate")
             {
                 BackgroundImage = Resources.StopProcess
             };

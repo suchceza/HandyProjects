@@ -73,10 +73,10 @@
     <Compile Include="Commands\ProcessStarter.cs" />
     <Compile Include="Commands\ProxyUpdater.cs" />
     <Compile Include="Commands\TempFolderCleaner.cs" />
-    <Compile Include="Components\AboutPanel.cs">
+    <Compile Include="Components\CustomPanels\AboutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\CustomPanels\ProcessStarterPopup.cs">
+    <Compile Include="Components\Popups\ProcessStarterPopup.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\WorkerPanels\CommandPanel.cs">
@@ -91,25 +91,25 @@
     <Compile Include="Components\BasePanels\DraggablePanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\CustomPanels\ImageLabel.cs">
+    <Compile Include="Components\ImageButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\CustomPanels\PopupContainer.cs">
+    <Compile Include="Components\Popups\PopupContainer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\WorkerPanels\CurrencyPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\CustomPanels\InfoPopup.cs">
+    <Compile Include="Components\Popups\InfoPopup.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\WorkerPanels\HourPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\TitlePanel.cs">
+    <Compile Include="Components\CustomPanels\TitlePanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\ToolbarPanel.cs">
+    <Compile Include="Components\CustomPanels\ToolbarPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Currency\ICurrency.cs" />
@@ -118,7 +118,7 @@
     <Compile Include="CustomApplicationContext.cs" />
     <Compile Include="Hour\WorkingHours.cs" />
     <Compile Include="Hour\HourUpdatedEventArgs.cs" />
-    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LogWriter.cs" />
     <Compile Include="Logging\LogData.cs" />
     <Compile Include="MainAppForm.cs">
       <SubType>Form</SubType>
@@ -145,6 +145,11 @@
     <Compile Include="Style\Colors\Green.cs" />
     <Compile Include="Style\Colors\Red.cs" />
     <Compile Include="Style\Painter.cs" />
+    <Compile Include="TiaBranch\ApplicationInfo.cs" />
+    <Compile Include="TiaBranch\BranchCollector.cs" />
+    <Compile Include="TiaBranch\BranchInfo.cs" />
+    <Compile Include="TiaBranch\Constants.cs" />
+    <Compile Include="TiaBranch\EditionInfo.cs" />
     <EmbeddedResource Include="MainAppForm.resx">
       <DependentUpon>MainAppForm.cs</DependentUpon>
     </EmbeddedResource>

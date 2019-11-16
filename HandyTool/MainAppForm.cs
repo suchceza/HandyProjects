@@ -1,7 +1,6 @@
 ﻿using HandyTool.Commands;
-using HandyTool.Components;
+using HandyTool.Components.CustomPanels;
 using HandyTool.Components.WorkerPanels;
-using HandyTool.Currency;
 using HandyTool.Currency.Services;
 using HandyTool.Logging;
 using HandyTool.Properties;
@@ -15,11 +14,26 @@ namespace HandyTool
     public partial class MainAppForm : Form
     {
         //################################################################################
+        #region Fields
+
+        private AboutPanel m_AboutPanel;
+        private TitlePanel m_TitlePanel;
+        private CurrencyPanel m_EurTryPanel;
+        private CurrencyPanel m_UsdTryPanel;
+        private CurrencyPanel m_EurUsdPanel;
+        private CommandPanel m_ProcessExecuter;
+        private CommandPanel m_ProcessKiller;
+        private HourPanel m_WorkHour;
+        private ToolbarPanel m_Toolbar;
+
+        #endregion
+
+        //################################################################################
         #region Constructor
 
         public MainAppForm()
         {
-            Logger = new Logger();
+            Logger = new LogWriter();
 
             InitializeComponent();
             InitializePanels();
@@ -30,14 +44,25 @@ namespace HandyTool
         //################################################################################
         #region Properties
 
-        public ContextMenu CustomContextMenu { get; set; }
-
-        internal Logger Logger { get; }
+        internal LogWriter Logger { get; }
 
         #endregion
 
         //################################################################################
-        #region Event Implementation
+        #region Internal Implementation
+
+        internal void SaveSettingsAndResetForm()
+        {
+            Settings.Default.Save();
+
+            ResetPanelPositions();
+            SetFormHeight();
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Event Handler Implementation
 
         private void Form_Load(object sender, System.EventArgs e)
         {
@@ -48,33 +73,113 @@ namespace HandyTool
             Opacity = Settings.Default.Opacity;
         }
 
+        private void CurrencySwitch_Click(object sender, System.EventArgs e)
+        {
+            m_EurTryPanel.Visible = !m_EurTryPanel.Visible;
+            m_EurUsdPanel.Visible = !m_EurUsdPanel.Visible;
+
+            Settings.Default.CurrencySwitch = !Settings.Default.CurrencySwitch;
+            SaveSettingsAndResetForm();
+        }
+
+        private void ToolsetSwitch_Click(object sender, System.EventArgs e)
+        {
+            m_ProcessExecuter.Visible = !m_ProcessExecuter.Visible;
+            m_ProcessKiller.Visible = !m_ProcessKiller.Visible;
+
+            Settings.Default.ToolsetSwitch = !Settings.Default.ToolsetSwitch;
+            SaveSettingsAndResetForm();
+        }
+
+        private void WorkHourSwitch_Click(object sender, System.EventArgs e)
+        {
+            m_WorkHour.Visible = !m_WorkHour.Visible;
+
+            Settings.Default.WorkHourSwitch = !Settings.Default.WorkHourSwitch;
+            SaveSettingsAndResetForm();
+        }
+
         #endregion
 
         //################################################################################
-        #region Internal Implementation
+        #region Private Implementation
 
-        internal void SetFormHeight()
+        private void InitializePanels()
+        {
+            bgPanel = new Panel();
+            bgPanel.Name = "xxx";
+            bgPanel.Width = 185;
+            bgPanel.BackColor = Color.Black;
+            bgPanel.Location = new Point(0, 0);
+            bgPanel.SendToBack();
+            bgPanel.Visible = true;
+
+            // todo: consider creating group panel for currencies and tools
+
+            //-- About Panel -------------------------------------------------------------
+            m_AboutPanel = new AboutPanel(this);
+
+            //-- Title Panel -------------------------------------------------------------
+            m_TitlePanel = new TitlePanel(this);
+
+            //-- Currency Panels ---------------------------------------------------------
+            m_EurTryPanel = new CurrencyPanel(Yahoo.EurTry, this);
+            m_UsdTryPanel = new CurrencyPanel(Yahoo.UsdTry, this);
+            m_EurUsdPanel = new CurrencyPanel(Yahoo.EurUsd, this, 5000);
+
+            //-- Process Panels ----------------------------------------------------------
+            m_ProcessExecuter = new CommandPanel(new ProcessStarter(), this, "Start Process");
+            m_ProcessKiller = new CommandPanel(new ProcessKiller(), this, "Kill TIA Processes");
+
+            //-- WorkHour Panel ----------------------------------------------------------
+            m_WorkHour = new HourPanel(this);
+
+            //-- Toolbar Panel -----------------------------------------------------------
+            m_Toolbar = new ToolbarPanel(this);
+            m_Toolbar.CurrencySwitch.Click += CurrencySwitch_Click;
+            m_Toolbar.WorkHourSwitch.Click += WorkHourSwitch_Click;
+            m_Toolbar.ToolsetSwitch.Click += ToolsetSwitch_Click;
+
+            //-- Add Panels in order -----------------------------------------------------
+            Controls.Add(m_AboutPanel);
+
+            Controls.Add(m_TitlePanel);
+            Controls.Add(m_Toolbar);
+            Controls.Add(m_WorkHour);
+            Controls.Add(m_EurTryPanel);
+            Controls.Add(m_UsdTryPanel);
+            Controls.Add(m_EurUsdPanel);
+            Controls.Add(m_ProcessExecuter);
+            Controls.Add(m_ProcessKiller);
+
+            Controls.Add(bgPanel);
+        }
+
+        Panel bgPanel;
+
+        private void SetFormHeight()
         {
             var height = 0;
             foreach (var panel in Controls.OfType<Panel>())
             {
-                if (panel.Visible)
+                if (panel.Visible && !panel.Name.Equals("xxx"))
                 {
                     height += panel.Height + 1;
                 }
             }
 
             Height = height + 1;
+            bgPanel.Height = Height;
         }
 
-        internal void ResetPanelPositions()
+        private void ResetPanelPositions()
         {
             int posY = 0;
 
             Control previousControl = null;
             foreach (Control control in Controls)
             {
-                if (control.Visible)
+                if (control.Visible && !control.Name.Equals("xxx"))
                 {
                     if (posY < 1)
                     {
@@ -90,59 +195,6 @@ namespace HandyTool
                     previousControl = control;
                 }
             }
-        }
-
-        #endregion
-
-        //################################################################################
-        #region Private Implementation
-
-        private void InitializePanels()
-        {
-            // todo: consider creating group panel for currencies and tools
-
-            //-- About Panel -------------------------------------------------------------
-            var aboutPanel = new AboutPanel(this);
-
-            //-- Title Panel -------------------------------------------------------------
-            var titlePanel = new TitlePanel(this);
-
-            //-- Currency Panels ---------------------------------------------------------
-            var eurTryPanel = new CurrencyPanel(Yahoo.EurTry, this);
-            var eurUsdPanel = new CurrencyPanel(Yahoo.EurUsd, this, 5000);
-
-            //-- Process Panels ----------------------------------------------------------
-            var processSelectorPanel = new CommandPanel(new ProcessStarter(), this, "Start Process");
-            var processKillPanel = new CommandPanel(new ProcessKiller(), this, "Kill TIA Processes");
-            var autoDebugPanel = new CommandPanel(new AutoDebugFileCreator(), this, "AutoDebug File Create");
-
-            //-- WorkHour Panel ----------------------------------------------------------
-            var hourPanel = new HourPanel(this);
-
-            //-- Toolbar Panel -----------------------------------------------------------
-            var toolbarPanel = new ToolbarPanel(this)
-            {
-                CurrencyPanels = new Panel[]
-                {
-                    eurTryPanel,
-                    eurUsdPanel
-                },
-                ToolsetPanels = new Panel[]
-                {
-                    processSelectorPanel,
-                    processKillPanel,
-                    autoDebugPanel
-                },
-                WorkHourPanel = hourPanel
-            };
-
-            //-- Add Panels in order -----------------------------------------------------
-            Controls.Add(aboutPanel);
-
-            Controls.Add(titlePanel);
-            Controls.Add(toolbarPanel);
-
-            toolbarPanel.AddSubPanels();
         }
 
         private void SetFormPosition()

@@ -36,18 +36,16 @@ namespace HandyTool.Components.BasePanels
         #endregion
 
         //################################################################################
-        #region Properties
-
-        internal static int WmNclButtonDown => c_WmNclButtonDown;
-
-        internal static int HtCaption => c_HtCaption;
-
-        #endregion
-
-        //################################################################################
         #region Abstract Methods
 
-        protected abstract void DragAndDrop(object sender, MouseEventArgs e);
+        protected void DragAndDrop(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Parent.Handle, c_WmNclButtonDown, c_HtCaption, 0);
+            }
+        }
 
         #endregion
     }

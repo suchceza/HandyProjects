@@ -1,6 +1,10 @@
-﻿using HandyTool.Properties;
+﻿using HandyTool.Components.CustomPanels;
+using HandyTool.Components.WorkerPanels;
+using HandyTool.Properties;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace HandyTool.Components
@@ -36,7 +40,11 @@ namespace HandyTool.Components
                 new MenuItem("Show Logs", ShowLogs),
                 new MenuItem("Clear Logs", ClearLogs)
             });
-            m_Settings = new MenuItem("Settings", AppSettings);
+            m_Settings = new MenuItem("Settings", new[]
+            {
+                new MenuItem("Currencies", GetCurrencyPanels()),
+                new MenuItem("Processes", GetProcessPanels())
+            });
             m_About = new MenuItem("About", About);
             m_Exit = new MenuItem("Exit", Exit);
 
@@ -95,6 +103,47 @@ namespace HandyTool.Components
             }
         }
 
+        private MenuItem[] GetCurrencyPanels()
+        {
+            IList<MenuItem> menuList = new List<MenuItem>();
+
+            foreach (Control panel in m_MainForm.Controls)
+            {
+                if (panel is CurrencyPanel)
+                {
+                    var menuItem = new MenuItem(ClearPanelName(panel.Name), AppSettings);
+                    menuItem.Tag = panel;
+                    menuItem.Checked = true; //todo: read this from settings file
+                    menuList.Add(menuItem);
+                }
+            }
+
+            return menuList.ToArray();
+        }
+
+        private MenuItem[] GetProcessPanels()
+        {
+            IList<MenuItem> menuList = new List<MenuItem>();
+
+            foreach (Control panel in m_MainForm.Controls)
+            {
+                if (panel is CommandPanel)
+                {
+                    var menuItem = new MenuItem(ClearPanelName(panel.Name), AppSettings);
+                    menuItem.Tag = panel;
+                    menuItem.Checked = true; //todo: read this from settings file
+                    menuList.Add(menuItem);
+                }
+            }
+
+            return menuList.ToArray();
+        }
+
+        private string ClearPanelName(string name)
+        {
+            return name.Split('_')[1];
+        }
+
         #endregion
 
         //################################################################################
@@ -141,7 +190,16 @@ namespace HandyTool.Components
 
         private void AppSettings(object sender, EventArgs args)
         {
-            //todo: implement ContextMenu Settings menu
+            var menuItem = (MenuItem)sender;
+
+            menuItem.Checked = !menuItem.Checked;
+
+            var panel = (Control)menuItem.Tag;
+            panel.Visible = menuItem.Checked;
+
+            //todo: if any background worker panel is disabled then stop it, if enabled start it.
+
+            ((MainAppForm)m_MainForm).SaveSettingsAndResetForm();
         }
 
         private void About(object sender, EventArgs args)

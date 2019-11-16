@@ -2,15 +2,14 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HandyTool.Components.CustomPanels
+namespace HandyTool.Components
 {
-    internal sealed class ImageLabel : Label
+    internal sealed class ImageButton : Label
     {
         //################################################################################
         #region Fields
 
         private readonly Control m_Parent;
-        private readonly int m_Origin;
         private readonly bool m_IsSwitchable;
 
         private bool m_IsSwitchOn;
@@ -22,10 +21,9 @@ namespace HandyTool.Components.CustomPanels
         //################################################################################
         #region Constructor
 
-        public ImageLabel(Control parent, int origin, string tooltip, bool isSwitchable = false, bool isSwitchedOn = false)
+        public ImageButton(Control parent, string tooltip, bool isSwitchable = false, bool isSwitchedOn = false)
         {
             m_Parent = parent;
-            m_Origin = origin;
             m_IsSwitchable = isSwitchable;
             m_IsSwitchOn = isSwitchedOn;
 
@@ -57,14 +55,14 @@ namespace HandyTool.Components.CustomPanels
 
         private Point SetLocation()
         {
-            int x = m_Origin;
+            int x = 2;
 
             foreach (Control control in m_Parent.Controls)
             {
                 x += 1 + control.Width;
             }
 
-            return new Point(x, m_Origin);
+            return new Point(x, 2);
         }
 
         private void OnClick(object sender, EventArgs e)

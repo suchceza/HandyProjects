@@ -1,5 +1,6 @@
 ﻿using HandyTool.Components.BasePanels;
 using HandyTool.Components.CustomPanels;
+using HandyTool.Components.Popups;
 using HandyTool.Hour;
 using HandyTool.Properties;
 using HandyTool.Style;
@@ -22,8 +23,8 @@ namespace HandyTool.Components.WorkerPanels
         private readonly TimeSpan m_ReminderStartLimit = new TimeSpan(0, 30, 0);
 
         private readonly TextBox m_HourText;
-        private ImageLabel m_HourDetails;
-        private ImageLabel m_HourStartStop;
+        private ImageButton m_HourDetails;
+        private ImageButton m_HourStartStop;
 
         private WorkingHours m_WorkingHours;
         private bool m_IsCancelled;
@@ -143,7 +144,7 @@ namespace HandyTool.Components.WorkerPanels
 
             #region Hour Details
 
-            m_HourDetails = new ImageLabel(this, 2, "Display work hour details")
+            m_HourDetails = new ImageButton(this, "Display work hour details")
             {
                 BackgroundImage = Resources.SummaryWorkHour
             };
@@ -157,7 +158,7 @@ namespace HandyTool.Components.WorkerPanels
 
             #region Hour Start/Stop
 
-            m_HourStartStop = new ImageLabel(this, 2, "Start/Stop hour counting")
+            m_HourStartStop = new ImageButton(this, "Start/Stop hour counting")
             {
                 BackgroundImage = Resources.RunProcess
             };
@@ -275,7 +276,7 @@ namespace HandyTool.Components.WorkerPanels
                 return;
             }
 
-            if (!IsPresentDay())
+            if (!IsPresentDay() && isStopped)
             {
                 ShowBalloonTip("Hour isn't set", "Please set the hour before start.", ToolTipIcon.Warning);
                 return;
@@ -405,14 +406,6 @@ namespace HandyTool.Components.WorkerPanels
                 var tooltipIcon = ceilRemainingMinutes > 15 ? ToolTipIcon.Info : ToolTipIcon.Warning;
                 ShowBalloonTip("Deadline Approaching", $"{ceilRemainingMinutes} minutes remain.", tooltipIcon);
             }
-        }
-
-        private void ShowBalloonTip(string title, string message, ToolTipIcon toolTipIcon)
-        {
-            ToolTipIcon icon = toolTipIcon;
-            int timeout = 2000;
-
-            BalloonTipDisplay.Show(title, message, icon, timeout);
         }
 
         #endregion

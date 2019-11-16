@@ -5,6 +5,8 @@ namespace HandyTool.Currency
     {
         string Name { get; }
 
+        string Tag { get; }
+
         string Source { get; }
     }
 }

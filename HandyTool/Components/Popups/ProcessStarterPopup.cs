@@ -1,12 +1,12 @@
 ﻿using HandyTool.Components.BasePanels;
 using HandyTool.Style;
-using HandyTool.Style.Colors;
+using HandyTool.TiaBranch;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HandyTool.Components.CustomPanels
+namespace HandyTool.Components.Popups
 {
     internal sealed class ProcessStarterPopup<T> : DraggablePanel where T : ColorBase, new()
     {
@@ -19,6 +19,9 @@ namespace HandyTool.Components.CustomPanels
         private readonly ComboBox m_BranchSelector;
         private readonly ComboBox m_ApplicationSelector;
         private readonly ComboBox m_EditionSelector;
+        private readonly Button m_StartProcessButton;
+
+        private readonly BranchCollector m_BranchCollector;
 
         #endregion
 
@@ -33,29 +36,31 @@ namespace HandyTool.Components.CustomPanels
             m_BranchSelector = new ComboBox();
             m_ApplicationSelector = new ComboBox();
             m_EditionSelector = new ComboBox();
+            m_StartProcessButton = new Button();
+
+            m_BranchCollector = new BranchCollector();
+            m_BranchCollector.CollectBranches();
 
             InitializeComponents();
         }
 
         #endregion
 
+        //################################################################################
+        #region Properties
+
         internal PopupContainer PopupContainer { get; set; }
+
+        internal string Output { get; private set; }
+
+        #endregion
 
         //################################################################################
         #region Protected Implementation
 
-        protected override void DragAndDrop(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Parent.Handle, WmNclButtonDown, HtCaption, 0);
-            }
-        }
-
         protected override void InitializeComponents()
         {
-            Size = new Size(275, 73);
+            Size = new Size(300, 97);
 
             #region Branch Label
 
@@ -90,16 +95,12 @@ namespace HandyTool.Components.CustomPanels
             m_BranchSelector.DropDownStyle = ComboBoxStyle.DropDownList;
 
             //Text Stuff
-            //todo: add branch collector method here
-            m_BranchSelector.Items.Add("TU5_OddFix");
-            m_BranchSelector.Items.Add("TU41_OddFix");
-            m_BranchSelector.Items.Add("TU51_OddFix");
-            m_BranchSelector.Items.Add("WM5_WinCC_HW_Work");
+            GetBranchNames();
             m_BranchSelector.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
 
             //Position/Size Stuff
             m_BranchSelector.Location = new Point(123, 2);
-            m_BranchSelector.Size = new Size(150, 20);
+            m_BranchSelector.Size = new Size(175, 20);
 
             //Alignment Stuff
             m_BranchSelector.Padding = new Padding(3);
@@ -107,7 +108,7 @@ namespace HandyTool.Components.CustomPanels
             //Style Stuff
             Painter<T>.Paint(m_BranchSelector, PaintMode.Normal);
 
-            m_BranchSelector.SelectedValueChanged += SelectionChanged;
+            m_BranchSelector.SelectedValueChanged += BranchSelectionChanged;
 
             Controls.Add(m_BranchSelector);
 
@@ -144,18 +145,14 @@ namespace HandyTool.Components.CustomPanels
             m_ApplicationSelector.Name = "Application Selector Label";
             m_ApplicationSelector.FlatStyle = FlatStyle.Standard;
             m_ApplicationSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+            m_ApplicationSelector.Enabled = false;
 
             //Text Stuff
-            //todo: add application collector method here
-            m_ApplicationSelector.Items.Add("Portal.exe");
-            m_ApplicationSelector.Items.Add("File.Utility.exe");
-            m_ApplicationSelector.Items.Add("File.Storage.Server.exe");
-            m_ApplicationSelector.Items.Add("Tray.Monitor.exe");
             m_ApplicationSelector.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
 
             //Position/Size Stuff
             m_ApplicationSelector.Location = new Point(123, 25);
-            m_ApplicationSelector.Size = new Size(150, 20);
+            m_ApplicationSelector.Size = new Size(175, 20);
 
             //Alignment Stuff
             m_ApplicationSelector.Padding = new Padding(3);
@@ -163,7 +160,7 @@ namespace HandyTool.Components.CustomPanels
             //Style Stuff
             Painter<T>.Paint(m_ApplicationSelector, PaintMode.Normal);
 
-            m_ApplicationSelector.SelectedValueChanged += SelectionChanged;
+            m_ApplicationSelector.SelectedValueChanged += ApplicationSelectionChanged;
 
             Controls.Add(m_ApplicationSelector);
 
@@ -202,18 +199,14 @@ namespace HandyTool.Components.CustomPanels
             m_EditionSelector.Name = "Edition Selector Label";
             m_EditionSelector.FlatStyle = FlatStyle.Standard;
             m_EditionSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+            m_EditionSelector.Enabled = false;
 
             //Text Stuff
-            //todo: add edition collector method here
-            m_EditionSelector.Items.Add("Professional");
-            m_EditionSelector.Items.Add("S7 Safety");
-            m_EditionSelector.Items.Add("SPL Basic");
-            m_EditionSelector.Items.Add("WinCC Prof");
             m_EditionSelector.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
 
             //Position/Size Stuff
             m_EditionSelector.Location = new Point(123, 48);
-            m_EditionSelector.Size = new Size(150, 20);
+            m_EditionSelector.Size = new Size(175, 20);
 
             //Alignment Stuff
             m_EditionSelector.Padding = new Padding(3);
@@ -221,18 +214,133 @@ namespace HandyTool.Components.CustomPanels
             //Style Stuff
             Painter<T>.Paint(m_EditionSelector, PaintMode.Normal);
 
-            m_EditionSelector.SelectedValueChanged += SelectionChanged;
+            m_EditionSelector.SelectedValueChanged += EditionSelectionChanged;
 
             Controls.Add(m_EditionSelector);
+
+            #endregion
+
+            #region Start Process Button
+
+            //Basic Stuff
+            m_StartProcessButton.Name = "Process Start Button";
+            m_StartProcessButton.Text = "Start Process";
+            m_StartProcessButton.FlatStyle = FlatStyle.Flat;
+            m_StartProcessButton.Enabled = false;
+
+            //Text Stuff
+            m_StartProcessButton.Font = new Font(new FontFamily("Consolas"), 9, FontStyle.Bold);
+
+            //Position/Size Stuff
+            m_StartProcessButton.Location = new Point(2, 71);
+            m_StartProcessButton.Size = new Size(296, 23);
+
+            //Alignment Stuff
+
+            //Style Stuff
+            Painter<T>.Paint(m_StartProcessButton, PaintMode.Normal);
+
+            m_StartProcessButton.Click += StartButtonClicked;
+
+            Controls.Add(m_StartProcessButton);
 
             #endregion
         }
 
         #endregion
 
-        private void SelectionChanged(object sender, EventArgs e)
+        //################################################################################
+        #region Event Handler Methods
+
+        private void BranchSelectionChanged(object sender, EventArgs e)
+        {
+            PopupContainer.Show();
+
+            m_ApplicationSelector.Items.Clear();
+
+            var applications = ((BranchInfo)m_BranchSelector.SelectedItem).Applications;
+            foreach (var application in applications)
+            {
+                m_ApplicationSelector.Items.Add(application);
+            }
+
+            m_ApplicationSelector.Enabled = true;
+        }
+
+        private void ApplicationSelectionChanged(object sender, EventArgs e)
+        {
+            PopupContainer.Show();
+            m_StartProcessButton.Enabled = true;
+
+            if (((ApplicationInfo)m_ApplicationSelector.SelectedItem).Name == "Portal")
+            {
+                m_EditionSelector.Items.Clear();
+
+                var editions = ((BranchInfo)m_BranchSelector.SelectedItem).Editions;
+                foreach (var edition in editions)
+                {
+                    m_EditionSelector.Items.Add(edition);
+                }
+
+                m_EditionSelector.Enabled = true;
+            }
+            else
+            {
+                m_EditionSelector.Items.Clear();
+                m_EditionSelector.Enabled = false;
+            }
+        }
+
+        private void EditionSelectionChanged(object sender, EventArgs e)
         {
             PopupContainer.Show();
         }
+
+        private void StartButtonClicked(object sender, EventArgs e)
+        {
+            string processPath;
+
+            if (m_EditionSelector.Enabled && m_EditionSelector.SelectedItem != null)
+            {
+                processPath = ((EditionInfo)m_EditionSelector.SelectedItem).Path;
+            }
+            else
+            {
+                processPath = ((ApplicationInfo)m_ApplicationSelector.SelectedItem).Path;
+            }
+
+            bool isExceptionThrown = false;
+            try
+            {
+                Process.Start(processPath);
+            }
+            catch (Exception)
+            {
+                isExceptionThrown = true;
+                //todo: command output in error case
+            }
+            finally
+            {
+                if (!isExceptionThrown)
+                {
+                    //todo: command output in success case
+                }
+            }
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Private Implementation
+
+        private void GetBranchNames()
+        {
+            foreach (var branch in m_BranchCollector.Branches)
+            {
+                m_BranchSelector.Items.Add(branch);
+            }
+        }
+
+        #endregion
     }
 }

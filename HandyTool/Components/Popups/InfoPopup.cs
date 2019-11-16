@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HandyTool.Components.CustomPanels
+namespace HandyTool.Components.Popups
 {
     internal struct PopupItem
     {
@@ -58,15 +58,6 @@ namespace HandyTool.Components.CustomPanels
 
         //################################################################################
         #region Protected Implementation
-
-        protected override void DragAndDrop(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Parent.Handle, WmNclButtonDown, HtCaption, 0);
-            }
-        }
 
         protected override void InitializeComponents()
         {

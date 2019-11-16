@@ -21,8 +21,8 @@ namespace HandyTool.Components.WorkerPanels
         private readonly string m_CommandName;
 
         private readonly Label m_BatchCommandLabel;
-        private ImageLabel m_BatchCommandStartStopLabel;
-        private ImageLabel m_BatchCommandSettingsLabel;
+        private ImageButton m_BatchCommandStartStopLabel;
+        private ImageButton m_BatchCommandSettingsLabel;
 
         #endregion
 
@@ -87,7 +87,7 @@ namespace HandyTool.Components.WorkerPanels
 
             #region Process Start/Stop
 
-            m_BatchCommandStartStopLabel = new ImageLabel(this, 2, "Execute command")
+            m_BatchCommandStartStopLabel = new ImageButton(this, "Execute command")
             {
                 BackgroundImage = Resources.RunProcess
             };
@@ -101,7 +101,7 @@ namespace HandyTool.Components.WorkerPanels
 
             #region Process Settings
 
-            m_BatchCommandSettingsLabel = new ImageLabel(this, 2, "Command settings")
+            m_BatchCommandSettingsLabel = new ImageButton(this, "Command settings")
             {
                 BackgroundImage = Resources.ProcessSettings
             };

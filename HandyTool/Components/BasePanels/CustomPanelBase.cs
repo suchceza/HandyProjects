@@ -22,7 +22,7 @@ namespace HandyTool.Components.BasePanels
 
         protected Control ParentControl { get; }
 
-        protected Logger Logger => ((MainAppForm)ParentControl).Logger;
+        protected LogWriter Logger => ((MainAppForm)ParentControl).Logger;
 
         #endregion
 
@@ -36,10 +36,31 @@ namespace HandyTool.Components.BasePanels
         //################################################################################
         #region Protected Implementation
 
+        protected void AddControl(Control controlToAdd, string tooltip = null)
+        {
+            int x = 1;
+
+            foreach (Control control in Controls)
+            {
+                x += control.Width + 1;
+            }
+
+            controlToAdd.Location = new Point(x, 1);
+            Controls.Add(controlToAdd);
+        }
+
         protected void PaintBorder(object sender, PaintEventArgs e)
         {
             Rectangle border = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
             CreateGraphics().DrawRectangle(new Pen(Color.White, 1), border);
+        }
+
+        protected void ShowBalloonTip(string title, string message, ToolTipIcon toolTipIcon)
+        {
+            ToolTipIcon icon = toolTipIcon;
+            int timeout = 2000;
+
+            BalloonTipDisplay.Show(title, message, icon, timeout);
         }
 
         #endregion

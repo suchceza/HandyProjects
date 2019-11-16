@@ -4,7 +4,7 @@ using HandyTool.Style.Colors;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HandyTool.Components
+namespace HandyTool.Components.CustomPanels
 {
     internal class AboutPanel : CustomPanelBase
     {
@@ -36,7 +36,6 @@ namespace HandyTool.Components
             TabIndex = 0;
             TabStop = false;
             Location = new Point(1, 1);
-            BackColor = Color.Yellow;
             Visible = false;
             VisibleChanged += AboutPanel_VisibleChanged;
             Click += CloseOnClick;
@@ -56,10 +55,11 @@ namespace HandyTool.Components
             m_AboutContent.TextAlign = ContentAlignment.MiddleCenter;
 
             //Style Stuff
-            Painter<Black>.Paint(m_AboutContent, PaintMode.Normal);
+            Painter<Blue>.Paint(m_AboutContent, PaintMode.Light);
 
             //Event Stuff
             m_AboutContent.Click += CloseOnClick;
+            m_AboutContent.Paint += PaintBorder;
 
             Controls.Add(m_AboutContent);
 

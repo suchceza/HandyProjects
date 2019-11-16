@@ -1,10 +1,9 @@
-﻿using HandyTool.Components.BasePanels;
-using HandyTool.Components.CustomPanels;
+﻿using HandyTool.Components.Popups;
 using HandyTool.Style.Colors;
 using System;
 using System.Drawing;
 using System.Text;
-using System.Threading;
+using System.Windows.Forms;
 
 namespace HandyTool.Commands
 {
@@ -40,8 +39,7 @@ namespace HandyTool.Commands
         {
             if (!m_Popup.Visible)
             {
-                //todo: show popup at screen center
-                m_Popup.Show(new Point(200, 200));
+                m_Popup.Show(GetScreenCenterPosition());
             }
         }
 
@@ -49,6 +47,20 @@ namespace HandyTool.Commands
 
         //################################################################################
         #region Private Implementation
+
+        private Point GetScreenCenterPosition()
+        {
+            decimal screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            decimal screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            decimal panelWidth = m_SummaryPopup.Width;
+            decimal panelHeight = m_SummaryPopup.Height;
+
+            var x = Math.Floor((screenWidth / 2) - (panelWidth / 2));
+            var y = Math.Floor((screenHeight / 2) - (panelHeight / 2));
+
+            return new Point((int)x, (int)y);
+        }
 
         #endregion
     }

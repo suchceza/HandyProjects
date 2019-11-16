@@ -31,8 +31,6 @@ namespace HandyTool
             Bitmap icon = Resources.Logo;
 #endif
 
-            ((MainAppForm)MainForm).CustomContextMenu = contextMenu;
-
             s_NotifyIcon = new NotifyIcon()
             {
                 //todo: badge icon for notify icon if anything occured eg. crash, update etc.
@@ -69,11 +67,9 @@ namespace HandyTool
             {
                 if (panel is CurrencyPanel)
                 {
-                    //todo: display N/A if currency fetch results not available
                     currencyInfos += $"{((CurrencyPanel)panel).CurrencyName}: {((CurrencyPanel)panel).CurrentRateValue}\n";
                 }
-
-                if (panel is HourPanel)
+                else if (panel is HourPanel)
                 {
                     workHourInfo = $"Elapsed: {((HourPanel)panel).ElapsedTime}";
                 }

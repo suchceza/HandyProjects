@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace HandyTool.Logging
 {
-    internal class Logger
+    internal class LogWriter
     {
         //################################################################################
         #region Fields
