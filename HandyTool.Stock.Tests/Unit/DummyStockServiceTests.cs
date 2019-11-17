@@ -1,4 +1,5 @@
 ﻿using HandyTool.Stock.Tests.Dummies;
+
 using NUnit.Framework;
 
 namespace HandyTool.Stock.Tests.Unit
@@ -6,7 +7,7 @@ namespace HandyTool.Stock.Tests.Unit
     [TestFixture]
     public class DummyStockServiceTests
     {
-        [TestCase]
+        [Test]
         public void StockService_Instantiated_NotNull()
         {
             //arrange
@@ -20,7 +21,7 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(stockService, Is.Not.Null);
         }
 
-        [TestCase]
+        [Test]
         public void StockService_GetStockData_IsCalled_AnEventFired()
         {
             //arrange
@@ -39,7 +40,7 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(isEventFired, Is.True);
         }
 
-        [TestCase]
+        [Test]
         public void StockService_GetStockData_IsNotCalled_NoEventFired()
         {
             //arrange
@@ -56,7 +57,7 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(isEventFired, Is.False);
         }
 
-        [TestCase]
+        [Test]
         public void StockService_GetStockData_IsCalled_EventArgsGathered()
         {
             //arrange
@@ -78,7 +79,7 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(stockEventArgs, Is.Not.Null);
         }
 
-        [TestCase]
+        [Test]
         public void StockService_GetStockData_IsNotCalled_NoEventArgsGathered()
         {
             //arrange
@@ -98,7 +99,7 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(stockEventArgs, Is.Null);
         }
 
-        [TestCase]
+        [Test]
         public void StockService_GetStockData_IsCalled_StockDataGathered_FromEventArgs()
         {
             //arrange

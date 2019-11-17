@@ -66,16 +66,31 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(stockList, Is.Not.Null);
         }
 
-        [TestCase(StockServiceType.Yahoo, "Yahoo")]
-        [TestCase(StockServiceType.Garanti, "Garanti")]
-        public void YahooStock_GetStockData(StockServiceType serviceType, string serviceName)
+        [Test]
+        public void StockInfoLoader_Returns_StockList()
+        {
+            //arrange
+
+            //act
+
+            var stockList = new StockInfoLoader().GetStockList().ToList();
+
+            //assert
+
+            Assert.That(stockList, Is.Not.Null);
+            Assert.That(stockList.Count, Is.GreaterThan(0));
+        }
+
+        [TestCase("Yahoo")]
+        [TestCase("Garanti")]
+        public void YahooStock_GetStockData(string serviceName)
         {
             //arrange
 
             StockData stockData = new StockData();
 
             var stockList = new StockInfoLoader().GetStockList();
-            var stockService = StockServiceFactory.CreateService(serviceType);
+            var stockService = StockServiceFactory.CreateService(serviceName);
 
             //act
 

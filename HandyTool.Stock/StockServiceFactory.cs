@@ -16,14 +16,14 @@ namespace HandyTool.Stock
         //################################################################################
         #region Public Static Members
 
-        public static IStockService CreateService(StockServiceType serviceType)
+        public static IStockService CreateService(string serviceName)
         {
-            switch (serviceType)
+            switch (serviceName)
             {
-                case StockServiceType.Yahoo:
+                case "Yahoo":
                     return new Yahoo();
 
-                case StockServiceType.Garanti:
+                case "Garanti":
                     return new Garanti();
 
                 default:
