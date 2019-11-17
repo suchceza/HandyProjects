@@ -3,6 +3,9 @@
 using HtmlAgilityPack;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace HandyTool.Stock.StockServices
 {
@@ -27,8 +30,15 @@ namespace HandyTool.Stock.StockServices
         void IStockService.GetStockData(IStock stock)
         {
             var htmlDoc = ReadHtmlDocument(stock.SourceUrl);
-            var actualData = GetActualData(htmlDoc);
-            var changeRate = GetChangeRate(htmlDoc);
+            var parsedHtml = ParseHtmlDocument(htmlDoc);
+
+            if (parsedHtml.Count != 2)
+            {
+                throw new HtmlWebException("Yahoo: Parsed html contains wrong node count.");
+            }
+
+            var actualData = GetActualData(parsedHtml[0]);
+            var changeRate = GetChangeRate(parsedHtml[1]);
 
             var stockData = new StockData
             {
@@ -45,9 +55,8 @@ namespace HandyTool.Stock.StockServices
         //################################################################################
         #region Private Members
 
-        private double GetActualData(HtmlDocument document)
+        private List<HtmlNode> ParseHtmlDocument(HtmlDocument document)
         {
-            string currencyText = string.Empty;
             var divList = document.DocumentNode.Descendants("div");
 
             foreach (var currentDiv in divList)
@@ -56,42 +65,57 @@ namespace HandyTool.Stock.StockServices
                 {
                     if (currentDiv.GetAttributeValue("id", string.Empty).Equals("quote-header-info"))
                     {
-                        var spanList = currentDiv.Descendants("span");
-                        foreach (var currentSpan in spanList)
-                        {
-                            if (currentSpan.GetAttributeValue("class", string.Empty).Contains("Trsdu(0.3s)"))
-                            {
-                                currencyText = currentSpan.InnerText;
-                                if (!string.IsNullOrEmpty(currencyText))
-                                    break;
-                            }
-                        }
+                        return currentDiv.Descendants("span")
+                            .Where(span => span.GetAttributeValue("class", string.Empty).Contains("Trsdu(0.3s)"))
+                            .ToList();
                     }
                 }
             }
 
-            return TryParseCurrencyText(currencyText, PreviousStockData.ActualData);
+            throw new HtmlWebException("Yahoo: Stock data cannot be parsed.");
         }
 
-        private static double GetChangeRate(HtmlDocument document)
+        private double GetActualData(HtmlNode node)
         {
-            return 0;
-        }
-
-        private static double TryParseCurrencyText(string currencyText, double previousValue)
-        {
-            double actualCurrency;
+            double actualData;
+            var actualDataText = node.InnerText;
 
             try
             {
-                actualCurrency = double.Parse(currencyText);
+                actualData = double.Parse(actualDataText);
             }
-            catch (Exception)
+            catch (FormatException)
             {
-                actualCurrency = previousValue;
+                actualData = PreviousStockData.ActualData;
             }
 
-            return actualCurrency;
+            return actualData;
+        }
+
+        private double GetChangeRate(HtmlNode node)
+        {
+            double changeRate;
+            var changeRateText = ParseChangeRate(node);
+
+            try
+            {
+                changeRate = double.Parse(changeRateText);
+            }
+            catch (FormatException)
+            {
+                changeRate = PreviousStockData.ChangeRate;
+            }
+
+            return changeRate;
+        }
+
+        private static string ParseChangeRate(HtmlNode node)
+        {
+            var innerText = node.InnerText;
+            var rateMatch = Regex.Match(innerText, @"(\d.\d*%)");
+            var changeRate = Regex.Replace(rateMatch.Value, "%", "");
+
+            return changeRate;
         }
 
         #endregion
