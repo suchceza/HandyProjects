@@ -52,6 +52,7 @@
     <Compile Include="StockInfo\StockInfoLoader.cs" />
     <Compile Include="StockInfo\XmlConstants.cs" />
     <Compile Include="StockServiceFactory.cs" />
+    <Compile Include="StockServices\Garanti.cs" />
     <Compile Include="StockServices\StockServiceBase.cs" />
     <Compile Include="StockServices\Yahoo.cs" />
     <Compile Include="StockServiceType.cs" />

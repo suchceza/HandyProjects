@@ -12,13 +12,6 @@ namespace HandyTool.Stock.StockServices
     internal class Yahoo : StockServiceBase, IStockService
     {
         //################################################################################
-        #region Fields
-
-        private StockData PreviousStockData { get; set; }
-
-        #endregion
-
-        //################################################################################
         #region IStockService Members
 
         event EventHandler<StockUpdateEventArgs> IStockService.StockUpdated

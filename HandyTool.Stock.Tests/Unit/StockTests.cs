@@ -10,7 +10,7 @@ namespace HandyTool.Stock.Tests.Unit
     [TestFixture]
     public class StockTests
     {
-        [TestCase]
+        [Test]
         public void Stock_Instantiated_WithDefaultConstructor()
         {
             //arrange
@@ -27,7 +27,7 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(dummyStock.SourceUrl, Is.Null);
         }
 
-        [TestCase]
+        [Test]
         public void Stock_Instantiated_WithCustomConstructor()
         {
             //arrange
@@ -50,7 +50,7 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(dummyStock.SourceUrl, Is.EqualTo(sourceUrl));
         }
 
-        [TestCase]
+        [Test]
         public void Stocks_GetStockList_ListNotNull()
         {
             //arrange
@@ -66,27 +66,28 @@ namespace HandyTool.Stock.Tests.Unit
             Assert.That(stockList, Is.Not.Null);
         }
 
-        [TestCase]
-        public void YahooStock_GetStockData()
+        [TestCase(StockServiceType.Yahoo, "Yahoo")]
+        [TestCase(StockServiceType.Garanti, "Garanti")]
+        public void YahooStock_GetStockData(StockServiceType serviceType, string serviceName)
         {
             //arrange
 
             StockData stockData = new StockData();
 
             var stockList = new StockInfoLoader().GetStockList();
-            var yahooStock = StockServiceFactory.CreateService(StockServiceType.Yahoo);
+            var stockService = StockServiceFactory.CreateService(serviceType);
 
             //act
 
-            yahooStock.StockUpdated += (sender, args) => { stockData = args.StockData; };
-            yahooStock.GetStockData(stockList.First(s => s.Service.Equals("Yahoo") && s.Tag.Equals("EURTRY")));
+            stockService.StockUpdated += (sender, args) => { stockData = args.StockData; };
+            stockService.GetStockData(stockList.First(s => s.Service.Equals(serviceName) && s.Tag.Equals("EURTRY")));
 
             //assert
 
             Assert.That(stockData, Is.Not.Null);
         }
 
-        [TestCase]
+        [Test]
         public void StockData_Instantiate_NotNull()
         {
             //arrange

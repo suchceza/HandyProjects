@@ -24,7 +24,7 @@ namespace HandyTool.Stock
                     return new Yahoo();
 
                 case StockServiceType.Garanti:
-                    throw new NotImplementedException();
+                    return new Garanti();
 
                 default:
                     throw new ArgumentException("Invalid stock serviceType argument.");

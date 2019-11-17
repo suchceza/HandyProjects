@@ -6,7 +6,7 @@
     <Stock name="SIE.DE" tag="SIEMENS" url="https://finance.yahoo.com/quote/SIE.DE?p=SIE.DE"/>
   </StockService>
   <StockService name="Garanti">
-    <Stock name="EUR/TRY" tag="EURTRY" url="https://www.garantibbva.com.tr/doviz-kurlari"/>
+    <Stock name="EUR/TRY" tag="EURTRY" url="https://www.paragaranti.com/doviz-eur"/>
     <Stock name="USD/TRY" tag="USDTRY" url="https://www.garantibbva.com.tr/doviz-kurlari"/>
     <Stock name="ALTIN" tag="ALT" url="https://www.garantibbva.com.tr/doviz-kurlari"/>
   </StockService>

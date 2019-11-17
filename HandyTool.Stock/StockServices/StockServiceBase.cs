@@ -16,6 +16,8 @@ namespace HandyTool.Stock.StockServices
 
         protected event EventHandler<StockUpdateEventArgs> StockUpdate;
 
+        protected StockData PreviousStockData { get; set; }
+
         protected void OnStockUpdate(StockData stockData)
         {
             var args = new StockUpdateEventArgs(stockData);
